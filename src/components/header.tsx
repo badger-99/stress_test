@@ -19,7 +19,7 @@ const pages = [{url:'/', name:'Home'}, {url:'/test', name:'Test'}]
 					<div className='justify-self-center flex flex-row gap-4'>
 						{pages.map((page) => {
 							return (
-								<Link href={page.url}>{`${ page.name }`}</Link>
+								<Link key={page.url} href={page.url}>{`${ page.name }`}</Link>
 							)
 						})}
 					</div>
