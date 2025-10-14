@@ -1,6 +1,6 @@
 export interface Question {
 		id: string;
-		question: string;
+		text: string;
 		category: string;
 		reverse_score: boolean;
 }
