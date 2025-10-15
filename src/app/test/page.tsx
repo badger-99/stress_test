@@ -1,14 +1,17 @@
 'use client';
 
-import Link from 'next/link';
 import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
 import { Answer, Results } from '@/lib/types';
 import { user } from '@/lib/mock-data';
+import { useResults } from '@/providers/results-provider';
+import { useRouter } from 'next/navigation';
 
 export default function Test() {
-	const suite = stress_test.questions;
+  const suite = stress_test.questions;
+  const router = useRouter();
+	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
 		const initialAnswers: Record<string, Answer> = {};
@@ -25,17 +28,20 @@ export default function Test() {
 
 	useEffect(() => {
 		setScore(Object.values(answers).reduce((sum, answer) => sum + answer.value, 0));
-  }, [answers, setScore]);
+	}, [answers, setScore]);
+
+	const handleResults = () => {
+		const result: Results = {
+			name: user.name,
+			id: user.id,
+			score,
+			answers,
+			time: Date.now(),
+		};
+    setResults([...results, result]);
+    router.push('/results')
+  };
   
-  const handleResults = () => {
-    const results: Results = {
-      name: user.name,
-      id: user.id,
-      score,
-      answers,
-      time: Date.now()
-    }
-  }
 	return (
 		<div className='flex-1 p-4'>
 			<p className='text-2xl font-semibold'>StressTest</p>
