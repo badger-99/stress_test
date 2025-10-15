@@ -3,8 +3,8 @@ import { Results } from '@/lib/types';
 import { useState } from 'react';
 
 interface ResultsContextType {
-  results: Results[];
-  setResults: React.Dispatch<React.SetStateAction<Results[]>>;
+  results: Results;
+  setResults: React.Dispatch<React.SetStateAction<Results>>;
 }
 
 const ResultsContext = createContext<ResultsContextType | undefined>(undefined);
@@ -22,7 +22,7 @@ interface ProviderProps {
 }
 
 export const ResultsProvider = ({ children }: ProviderProps) => {
-  const [results, setResults] = useState<Results[]>([])
+  const [results, setResults] = useState<Results>({history: [], latest: null})
 
 	return <ResultsContext.Provider value={{ results, setResults }}>{children}</ResultsContext.Provider>;
 };

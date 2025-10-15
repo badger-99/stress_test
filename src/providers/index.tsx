@@ -1,6 +1,5 @@
 'use client';
 
-import { Results } from '@/lib/types';
 import { ThemeProvider } from './theme-provider';
 import { ResultsProvider } from './results-provider';
 

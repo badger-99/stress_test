@@ -3,14 +3,14 @@
 import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
-import { Answer, Results } from '@/lib/types';
+import { Answer, Result } from '@/lib/types';
 import { user } from '@/lib/mock-data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 
 export default function Test() {
-  const suite = stress_test.questions;
-  const router = useRouter();
+	const suite = stress_test.questions;
+	const router = useRouter();
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
@@ -31,17 +31,17 @@ export default function Test() {
 	}, [answers, setScore]);
 
 	const handleResults = () => {
-		const result: Results = {
+		const result: Result = {
 			name: user.name,
 			id: user.id,
 			score,
 			answers,
 			time: Date.now(),
 		};
-    setResults([...results, result]);
-    router.push('/results')
-  };
-  
+		setResults({ history: [...results.history, result], latest: result });
+		router.push('/results');
+	};
+
 	return (
 		<div className='flex-1 p-4'>
 			<p className='text-2xl font-semibold'>StressTest</p>

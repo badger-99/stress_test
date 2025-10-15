@@ -15,10 +15,15 @@ export interface Answer {
 	category: string;
 }
 
-export interface Results {
+export interface Result {
 	name: string;
 	id: string;
 	score: number;
 	answers: Record<string, Answer>;
 	time: number;
+}
+
+export interface Results {
+  history: Result[];
+  latest: Result | null;
 }
