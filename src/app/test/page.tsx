@@ -1,10 +1,31 @@
-import Link from "next/link";
-import { stress_test } from "@/lib/questions";
-import QuestionCard from "@/components/question";
+'use client';
+
+import Link from 'next/link';
+import { stress_test } from '@/lib/questions';
+import QuestionCard from '@/components/question';
+import { useEffect, useState } from 'react';
+import { Answer } from '@/lib/types';
 
 export default function Test() {
-  const suite = stress_test.questions;
-  return (
+	const suite = stress_test.questions;
+	const [score, setScore] = useState(0);
+	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
+		const initialAnswers: Record<string, Answer> = {};
+		Object.keys(suite).forEach((qid) => {
+			const q = suite[qid];
+			initialAnswers[q.id] = { id: q.id, value: 0, category: q.category };
+		});
+		return initialAnswers;
+	});
+
+	const handleResponse = (id: string, value: number, category: string) => {
+		setAnswers((prev) => ({ ...prev, [id]: { id, value, category } }));
+	};
+
+	useEffect(() => {
+		setScore(Object.values(answers).reduce((sum, answer) => sum + answer.value, 0));
+	}, [answers, setScore]);
+	return (
 		<div className='flex-1 p-4'>
 			<p className='text-2xl font-semibold'>StressTest</p>
 			<p>
@@ -12,14 +33,23 @@ export default function Test() {
 				emotional balance.
 			</p>
 			<div className='w-full flex flex-col p-2 items-center justify-center gap-6'>
+				total score = {`${score}`}
 				<p className='text-sm'>
-					Answer how much each statement applied to you today (0 = Not at all, 4 = Extremely).
-        </p>
-        <div className="flex flex-col gap-4">
-          {Object.keys(suite).map((question) => {
-            return <QuestionCard key={suite[`${question}`].id} question={suite[`${question}`]} />;
-        })}
-        </div>
+					Answer how much each statement applied to you today (1 = Not at all, 5 = Extremely).
+				</p>
+				<div className='flex flex-col gap-4 w-3xl'>
+					{Object.keys(suite).map((question) => {
+						const q = suite[question];
+						return (
+							<QuestionCard
+								key={q.id}
+								question={q}
+								value={answers[q.id]?.value || 0}
+								onChange={(value) => handleResponse(q.id, value, q.category)}
+							/>
+						);
+					})}
+				</div>
 			</div>
 			<Link href={'/results'}>see results</Link>
 		</div>
