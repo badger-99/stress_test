@@ -60,12 +60,11 @@ export default function Test() {
 		<div className='flex-1 p-4'>
 			<p className='text-2xl font-semibold'>StressTest</p>
 			<p>
-				Emotional Well-Being Check-In: Quick, friendly self-assessment of perceived stress and
+				Friendly self-assessment of perceived stress and
 				emotional balance.
 			</p>
-			<div className='w-full flex flex-col p-2 items-center justify-center gap-6'>
-				total score = {`${score}`}
-				<p className='text-sm'>
+			<div className='w-full flex flex-col p-2 items-center justify-center gap-6 mb-8'>
+				<p className='text-md my-5'>
 					Answer how much each statement applied to you today (1 = Not at all, 5 = Extremely).
 				</p>
 				<div className='flex flex-col gap-4 w-3xl'>
@@ -81,8 +80,13 @@ export default function Test() {
 						);
 					})}
 				</div>
+				<button
+					className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white'
+					onClick={handleResults}
+				>
+					See Results
+				</button>
 			</div>
-			<button onClick={handleResults}>see results</button>
 		</div>
 	);
 }
