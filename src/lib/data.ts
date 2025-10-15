@@ -1,7 +1,7 @@
 export const user = {
-  name: 'Human Being',
-  id: 'user123'
-}
+	name: 'Human Being',
+	id: 'user123',
+};
 
 export const insights = {
 	1: {

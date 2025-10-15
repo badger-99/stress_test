@@ -1,5 +1,4 @@
 import { Result } from '@/lib/types';
-import { FileText } from 'lucide-react';
 
 interface Props {
 	data: Result;
