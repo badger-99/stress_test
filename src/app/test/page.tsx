@@ -4,7 +4,7 @@ import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
 import { Answer, Result } from '@/lib/types';
-import { user } from '@/lib/mock-data';
+import { user } from '@/lib/data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 
