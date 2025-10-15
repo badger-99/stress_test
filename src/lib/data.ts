@@ -5,7 +5,7 @@ export const user = {
 
 export const insights = {
 	1: {
-		stress_level: 'Low Stress',
+		stress_level: 'Low',
 		description: 'You seem relaxed and emotionally balanced. Keep nurturing that!',
 		recommendations: [
 			'Keep up your healthy balance — regular breaks and mindful downtime are working well for you.',
@@ -16,7 +16,7 @@ export const insights = {
 	},
 
 	2: {
-		stress_level: 'Mild Stress',
+		stress_level: 'Mild',
 		description:
 			"You experience some stress, but you're managing it fairly well. A few small lifestyle tweaks might help.",
 		recommendations: [
@@ -28,7 +28,7 @@ export const insights = {
 	},
 
 	3: {
-		stress_level: 'Moderate Stress',
+		stress_level: 'Moderate',
 		description:
 			"You're feeling the strain of daily pressures. It might help to step back and recharge regularly.",
 		recommendations: [
@@ -40,7 +40,7 @@ export const insights = {
 	},
 
 	4: {
-		stress_level: 'High Stress',
+		stress_level: 'High',
 		description:
 			'Your stress levels appear elevated. Consider reaching out for support or making deliberate rest part of your routine.',
 		recommendations: [
