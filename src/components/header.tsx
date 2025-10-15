@@ -4,7 +4,11 @@ import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
 
 export default function Header() {
-const pages = [{url:'/', name:'Home'}, {url:'/test', name:'Test'}]
+const pages = [
+	{ url: '/', name: 'Home' },
+	{ url: '/test', name: 'Test' },
+	{ url: '/results', name: 'Results' },
+];
 	return (
 		<header className='fixed w-full top-0 left-0 flex items-center justify-center overflow-hidden border border-b-2 z-50 bg-background'>
 			<div className='w-full'>
