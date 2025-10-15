@@ -15,15 +15,22 @@ export interface Answer {
 	category: string;
 }
 
+export interface Feedback {
+	stress_level: string;
+	description: string;
+	recommendations: string[];
+}
+
 export interface Result {
 	name: string;
 	id: string;
 	score: number;
 	answers: Record<string, Answer>;
 	time: number;
+	feedback: Feedback;
 }
 
 export interface Results {
-  history: Result[];
-  latest: Result | null;
+	history: Result[];
+	latest: Result | null;
 }

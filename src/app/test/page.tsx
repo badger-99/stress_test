@@ -3,8 +3,8 @@
 import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
-import { Answer, Result } from '@/lib/types';
-import { user } from '@/lib/data';
+import { Answer, Feedback, Result } from '@/lib/types';
+import { insights, user } from '@/lib/data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +17,7 @@ export default function Test() {
 		const initialAnswers: Record<string, Answer> = {};
 		Object.keys(suite).forEach((qid) => {
 			const q = suite[qid];
-			initialAnswers[q.id] = { id: q.id, value: 0, category: q.category };
+			initialAnswers[q.id] = { id: q.id, value: 1, category: q.category };
 		});
 		return initialAnswers;
 	});
@@ -28,16 +28,30 @@ export default function Test() {
 
 	useEffect(() => {
 		setScore(Object.values(answers).reduce((sum, answer) => sum + answer.value, 0));
-	}, [answers, setScore]);
+  }, [answers, setScore]);
+  
+  const getFeedback = () => {
+    if (score < 20) {
+      return insights[1];
+    } else if (score < 30) {
+      return insights[2];
+    } else if (score < 40) {
+      return insights[3];
+    } else {
+      return insights[4];
+    }
+  }
 
 	const handleResults = () => {
-		const result: Result = {
-			name: user.name,
-			id: user.id,
-			score,
-			answers,
-			time: Date.now(),
-		};
+    const result: Result = {
+      name: user.name,
+      id: user.id,
+      score,
+      answers,
+      time: Date.now(),
+      feedback: getFeedback(),
+    };
+
 		setResults({ history: [...results.history, result], latest: result });
 		router.push('/results');
 	};
