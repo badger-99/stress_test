@@ -1,11 +1,16 @@
 'use client';
 
 import { ThemeProvider } from './theme-provider';
+import { ResultsProvider } from './results-provider';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+interface ProviderProps {
+	children: React.ReactNode;
+}
+
+export function Providers({ children }: ProviderProps) {
 	return (
 		<ThemeProvider enableSystem attribute='class' defaultTheme='system' disableTransitionOnChange>
-			{children}
+			<ResultsProvider>{children}</ResultsProvider>
 		</ThemeProvider>
 	);
 }
