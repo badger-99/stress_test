@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
-import { Answer } from '@/lib/types';
+import { Answer, Results } from '@/lib/types';
+import { user } from '@/lib/mock-data';
 
 export default function Test() {
 	const suite = stress_test.questions;
@@ -24,7 +25,17 @@ export default function Test() {
 
 	useEffect(() => {
 		setScore(Object.values(answers).reduce((sum, answer) => sum + answer.value, 0));
-	}, [answers, setScore]);
+  }, [answers, setScore]);
+  
+  const handleResults = () => {
+    const results: Results = {
+      name: user.name,
+      id: user.id,
+      score,
+      answers,
+      time: Date.now()
+    }
+  }
 	return (
 		<div className='flex-1 p-4'>
 			<p className='text-2xl font-semibold'>StressTest</p>
@@ -51,7 +62,7 @@ export default function Test() {
 					})}
 				</div>
 			</div>
-			<Link href={'/results'}>see results</Link>
+			<button onClick={handleResults}>see results</button>
 		</div>
 	);
 }
