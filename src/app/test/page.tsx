@@ -17,17 +17,25 @@ export default function Test() {
 		const initialAnswers: Record<string, Answer> = {};
 		Object.keys(suite).forEach((qid) => {
 			const q = suite[qid];
-			initialAnswers[q.id] = { id: q.id, value: 1, category: q.category };
+			initialAnswers[q.id] = { id: q.id, value: 1, category: q.category, reverse_score: q.reverse_score };
 		});
 		return initialAnswers;
 	});
 
-	const handleResponse = (id: string, value: number, category: string) => {
-		setAnswers((prev) => ({ ...prev, [id]: { id, value, category } }));
+	const handleResponse = (id: string, value: number, category: string, reverse_score: boolean) => {
+		setAnswers((prev) => ({ ...prev, [id]: { id, value, category, reverse_score } }));
 	};
 
 	useEffect(() => {
-		setScore(Object.values(answers).reduce((sum, answer) => sum + answer.value, 0));
+		let total = 0
+		Object.values(answers).map((answer) => {
+			if (answer.reverse_score) {
+				total+= (6 - answer.value)
+			} else {
+				total += answer.value
+			}
+		})
+		setScore(total);
   }, [answers, setScore]);
   
   const getFeedback = () => {
@@ -64,6 +72,7 @@ export default function Test() {
 				emotional balance.
 			</p>
 			<div className='w-full flex flex-col p-2 items-center justify-center gap-6 mb-8'>
+				{`${score}`}
 				<p className='text-md my-5'>
 					Answer how much each statement applied to you today (1 = Not at all, 5 = Extremely).
 				</p>
@@ -75,7 +84,7 @@ export default function Test() {
 								key={q.id}
 								question={q}
 								value={answers[q.id]?.value || 0}
-								onChange={(value) => handleResponse(q.id, value, q.category)}
+								onChange={(value) => handleResponse(q.id, value, q.category, q.reverse_score)}
 							/>
 						);
 					})}
