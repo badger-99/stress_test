@@ -1,3 +1,4 @@
+'use client'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,11 +16,18 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import { login } from "@/lib/supabase/server"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+      const form_data = new FormData(event.currentTarget);
+      await login(form_data);
+    }
+  
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,12 +38,13 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -51,7 +60,7 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
