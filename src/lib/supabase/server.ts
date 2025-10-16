@@ -3,46 +3,55 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 // Loging in
 export async function login(formData: FormData) {
-  const supabase = await createClient();
+	const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  };
+	// type-casting here for convenience
+	// in practice, you should validate your inputs
+	const data = {
+		email: formData.get('email') as string,
+		password: formData.get('password') as string,
+	};
 
-  const { error } = await supabase.auth.signInWithPassword(data);
+	const { error } = await supabase.auth.signInWithPassword(data);
 
-  if (error) {
-    redirect('/error');
-  }
+	if (error) {
+		redirect('/error');
+	}
 
-  revalidatePath('/', 'layout');
-  redirect('/');
+	revalidatePath('/', 'layout');
+	redirect('/');
 }
 
 // Signing up
 export async function signup(formData: FormData) {
-  const supabase = await createClient();
+	const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    name: formData.get('name') as string,
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  };
+	// type-casting here for convenience
+	// in practice, you should validate your inputs
+	const data = {
+		name: formData.get('name') as string,
+		email: formData.get('email') as string,
+		password: formData.get('password') as string,
+	};
 
-  const { error } = await supabase.auth.signUp(data);
+	const { error } = await supabase.auth.signUp(data);
 
-  if (error) {
-    redirect('/error');
-  }
+	if (error) {
+		redirect('/error');
+	}
 
-  revalidatePath('/', 'layout');
-  redirect('/');
+	const cookieStore = await cookies();
+	cookieStore.set({
+		name: 'signup_email',
+		value: data.email,
+		httpOnly: true,
+		path: '/',
+		maxAge: 60 * 5, // 5 minutes
+	});
+	revalidatePath('/', 'layout');
+	redirect('/auth/info');
 }
