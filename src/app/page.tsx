@@ -40,6 +40,9 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
+				<footer className='text-center text-xs text-gray-600 py-6'>
+					Made with ♥ — StressTest Prototype ©2025
+				</footer>
 			</div>
 		);
 	}
@@ -75,6 +78,9 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+			<footer className='text-center text-xs text-gray-600 py-6'>
+				Made with ♥ — StressTest Prototype ©2025
+			</footer>
 		</div>
 	);
 }
