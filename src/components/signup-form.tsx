@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { signup } from '@/lib/supabase/server';
 import { useEffect, useState } from 'react';
+import { oAuthSignIn } from '@/lib/supabase/client';
+import { Provider } from '@supabase/supabase-js';
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 	const [password, setPassword] = useState('');
@@ -22,7 +24,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 		const form_data = new FormData(event.currentTarget);
 		await signup(form_data);
 	}
-
+	async function handleOAuth(provider: Provider, origin: string) {
+		await oAuthSignIn(provider, origin)
+	}
 	return (
 		<Card {...props}>
 			<CardHeader>
@@ -78,7 +82,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 								<Button disabled={!valid} type='submit'>
 									Create Account
 								</Button>
-								<Button variant='outline' type='button'>
+								<Button
+									variant='outline'
+									type='button'
+									onClick={() => handleOAuth('google', origin)}
+								>
 									Sign up with Google
 								</Button>
 								<FieldDescription className='px-6 text-center'>

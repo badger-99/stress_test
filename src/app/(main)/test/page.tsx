@@ -15,7 +15,7 @@ export default function Test() {
 	const router = useRouter();
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
-	const [guest, setGuest] = useState('')
+	const [guest, setGuest] = useState('');
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
 		const initialAnswers: Record<string, Answer> = {};
 		Object.keys(suite).forEach((qid) => {
@@ -61,8 +61,8 @@ export default function Test() {
 
 	const handleResults = () => {
 		const result: Result = {
-			name: user? user.user_metadata.display_name: guest,
-			id: user? user.id: 'guest123',
+			name: user ? user.user_metadata.name : guest,
+			id: user ? user.id : 'guest123',
 			score,
 			answers,
 			time: Date.now(),
@@ -108,8 +108,8 @@ export default function Test() {
 						<input
 							type='text'
 							placeholder='Enter Your Name'
-								className='p-2 border border-blue-500 rounded-lg w-[20rem]'
-								onChange={e => setGuest(e.target.value)}
+							className='p-2 border border-blue-500 rounded-lg w-[20rem]'
+							onChange={(e) => setGuest(e.target.value)}
 						/>
 						<Button
 							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer'

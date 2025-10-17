@@ -1,34 +1,26 @@
-'use client'
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import { login } from "@/lib/supabase/server"
+'use client';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import Link from 'next/link';
+import { login } from '@/lib/supabase/server';
+import { Provider } from '@supabase/supabase-js';
+import { oAuthSignIn } from '@/lib/supabase/client';
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-      event.preventDefault();
-      const form_data = new FormData(event.currentTarget);
-      await login(form_data);
-    }
-  
-  return (
+export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		const form_data = new FormData(event.currentTarget);
+		await login(form_data);
+	}
+
+	async function handleOAuth(provider: Provider, origin: string) {
+		await oAuthSignIn(provider, origin);
+	}
+
+	return (
 		<div className={cn('flex flex-col gap-6', className)} {...props}>
 			<Card>
 				<CardHeader>
@@ -56,7 +48,11 @@ export function LoginForm({
 							</Field>
 							<Field>
 								<Button type='submit'>Login</Button>
-								<Button variant='outline' type='button'>
+								<Button
+									variant='outline'
+									type='button'
+									onClick={() => handleOAuth('google', origin)}
+								>
 									Login with Google
 								</Button>
 								<FieldDescription className='text-center'>

@@ -8,16 +8,16 @@ export default function Home() {
 	const { user } = useUser();
 
 	if (user) {
-		const name = firstName(user.user_metadata.display_name);
+		const name = firstName(user.user_metadata.name);
 
 		return (
-			<>
+			<div className='flex flex-col min-h-screen pt-19'>
 				<Header />
 				<div className='flex-1 flex justify-center w-full'>
 					<div className='flex flex-col text-center gap-4 mt-32'>
-						<div className=''>
-							<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-						</div>
+						{/* <div> */}
+						<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
+						{/* </div> */}
 						<div className='max-w-2xl'>
 							<p>
 								Take a quick, and friendly self-assessment to explore your current stress levels and
@@ -40,7 +40,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-			</>
+			</div>
 		);
 	}
 

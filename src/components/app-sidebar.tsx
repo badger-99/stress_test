@@ -23,7 +23,7 @@ import { getInitials } from '@/lib/utils';
 
 export function AppSidebar({ user }: { user: User | null }) {
 	const pathname = usePathname();
-	const initials = getInitials(user?.user_metadata.display_name);
+	const initials = getInitials(user?.user_metadata.name);
 
 	const items = [
 		{
@@ -76,20 +76,22 @@ export function AppSidebar({ user }: { user: User | null }) {
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						))}
-						{user && <SidebarMenuItem
-							key='History'
-							className={`${pathname == '/history' && 'border border-blue-400 rounded-lg'}`}
-						>
-							<SidebarMenuButton
-								className={`${pathname == '/history' && 'rounded-lg hover:bg-transparent'}`}
-								asChild
+						{user && (
+							<SidebarMenuItem
+								key='History'
+								className={`${pathname == '/history' && 'border border-blue-400 rounded-lg'}`}
 							>
-								<Link href='/history'>
-									<ChartColumn />
-									<span>History</span>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>}
+								<SidebarMenuButton
+									className={`${pathname == '/history' && 'rounded-lg hover:bg-transparent'}`}
+									asChild
+								>
+									<Link href='/history'>
+										<ChartColumn />
+										<span>History</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						)}
 					</SidebarMenu>
 				</SidebarGroupContent>
 				<SidebarGroup />
