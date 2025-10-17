@@ -4,21 +4,25 @@ import { ThemeProvider } from './theme-provider';
 import { UserProvider } from './user-provider';
 import { QuestionsProvider } from './questions-provider';
 import { ResultsProvider } from './results-provider';
+import { InsightsProvider } from './insights-provider';
 import { User } from '@supabase/supabase-js';
-import { Question } from '@/lib/types';
+import { Question, Insight } from '@/lib/types';
 
 interface ProviderProps {
 	children: React.ReactNode;
 	user: User | null;
 	questions: Question[];
+	insights: Insight[];
 }
 
-export function Providers({ children, user, questions }: ProviderProps) {
+export function Providers({ children, user, questions, insights }: ProviderProps) {
 	return (
 		<ThemeProvider enableSystem attribute='class' defaultTheme='system' disableTransitionOnChange>
 			<UserProvider user={user}>
 				<QuestionsProvider questions={questions}>
-					<ResultsProvider>{children}</ResultsProvider>
+					<InsightsProvider insights={insights}>
+						<ResultsProvider>{children}</ResultsProvider>
+					</InsightsProvider>
 				</QuestionsProvider>
 			</UserProvider>
 		</ThemeProvider>

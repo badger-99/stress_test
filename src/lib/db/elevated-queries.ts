@@ -17,3 +17,16 @@ export async function getQuestions() {
 	return questions ?? [];
 }
 
+// Get all insights
+export async function getInsights() {
+	const { data: insights, error }: PostgrestResponse<Insight> = await supabase
+		.from('insights')
+		.select('*');
+
+	if (error) {
+		console.error('Error fetching insights:', error);
+		return [];
+	}
+
+	return insights ?? [];
+}

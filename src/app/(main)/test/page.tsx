@@ -1,19 +1,19 @@
 'use client';
 
-
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
 import { Answer, Result } from '@/lib/types';
-import { insights } from '@/lib/data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/user-provider';
 import { Button } from '@/components/ui/button';
 import { useQuestions } from '@/providers/questions-provider';
+import { useInsights } from '@/providers/insights-provider';
 
 export default function Test() {
 	const router = useRouter();
-	const {questions} = useQuestions();
+	const { questions } = useQuestions();
+	const { insights } = useInsights();
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [guest, setGuest] = useState('');
@@ -49,13 +49,13 @@ export default function Test() {
 
 	const getFeedback = () => {
 		if (score < 20) {
-			return insights[1];
+			return insights[0];
 		} else if (score < 30) {
-			return insights[2];
+			return insights[1];
 		} else if (score < 40) {
-			return insights[3];
+			return insights[2];
 		} else {
-			return insights[4];
+			return insights[3];
 		}
 	};
 
