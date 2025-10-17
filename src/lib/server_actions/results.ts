@@ -38,7 +38,7 @@ export async function getResults() {
 	} = await supabase.auth.getUser();
 
 	if (userError || !user) {
-		throw new Error('Unauthorized');
+		return { history: [], latest: null };
 	}
 
 	const { data: results, error } = await supabase
