@@ -1,19 +1,14 @@
+'use server';
 import ThemeToggle from '@/components/theme-toggle';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-
-async function deleteCookie() {
-	'use server';
-	const cookieStore = await cookies();
-	cookieStore.delete('signup_email');
-}
 
 export default async function InfoPage() {
 	const cookieStore = await cookies();
 	const email = cookieStore.get('signup_email')?.value ?? 'm@example.com';
 
 	if (cookieStore.has('signup_email')) {
-		await deleteCookie();
+		(await cookies()).delete('signup_email');
 	}
 
 	return (
