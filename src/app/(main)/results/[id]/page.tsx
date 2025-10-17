@@ -40,7 +40,8 @@ export default function Results() {
 
 	if (!selected) return <p>Loading result...</p>;
 
-	const name = firstName(selected.name);
+	selected.name = user?.user_metadata.name;
+	const name = firstName(user?.user_metadata.name);
 
 	const handleDownload = async () => {
 		const blob = await pdf(<PDFReport data={selected} />).toBlob();

@@ -73,9 +73,10 @@ export default function Test() {
 				created_at: Date.now(),
 				feedback: getFeedback(),
 			};
-			
+			console.log(result.name)
 			await saveResults(result); // calls server action
 			const data = await getResults(); // calls server action
+			console.log(data.latest?.name)
 			setResults(data);
 		} else {
 			setIsProcessing(true)

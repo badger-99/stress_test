@@ -28,7 +28,8 @@ export default function Results() {
 	}
 
 	const latest = results.latest!;
-	const name = firstName(latest.name)
+	latest.name = user?.user_metadata.name;
+	const name = firstName(user?.user_metadata.name)
 
 	const handleDownload = async () => {
 		const blob = await pdf(<PDFReport data={latest} />).toBlob();

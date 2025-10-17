@@ -5,7 +5,7 @@ interface Props {
 }
 
 export function Report({ data }: Props) {
-  const date = new Date(data.time).toLocaleString()
+  const date = new Date(data.created_at).toLocaleString()
 	return (
 		<div className='mx-auto max-w-4xl bg-white p-12 text-foreground print:p-8 border border-black'>
 			{/* Header Section */}
