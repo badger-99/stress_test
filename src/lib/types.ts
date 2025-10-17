@@ -13,6 +13,7 @@ export interface Answer {
 	id: string;
 	value: number;
 	category: string;
+	reverse_score: boolean;
 }
 
 export interface Feedback {
