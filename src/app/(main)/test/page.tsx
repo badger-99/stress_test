@@ -9,6 +9,8 @@ import { useUser } from '@/providers/user-provider';
 import { Button } from '@/components/ui/button';
 import { useQuestions } from '@/providers/questions-provider';
 import { useInsights } from '@/providers/insights-provider';
+import { Spinner } from '@/components/ui/spinner';
+import { getResults, saveResults } from '@/lib/server_actions/results';
 
 export default function Test() {
 	const router = useRouter();
@@ -17,6 +19,7 @@ export default function Test() {
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [guest, setGuest] = useState('');
+	const [isProcessing, setIsProcessing] = useState(false)
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
 		const initialAnswers: Record<string, Answer> = {};
 		questions.forEach((q) => {
@@ -59,17 +62,36 @@ export default function Test() {
 		}
 	};
 
-	const handleResults = () => {
-		const result: Result = {
-			name: user ? user.user_metadata.name : guest,
-			id: user ? user.id : 'guest123',
-			score,
-			answers,
-			time: Date.now(),
-			feedback: getFeedback(),
-		};
-
-		setResults({ history: [...results.history, result], latest: result });
+	const handleResults = async () => {
+		if (user) {
+			setIsProcessing(true)
+			const result: Result = {
+				name: user.user_metadata.name,
+				id: user.id,
+				score,
+				answers,
+				created_at: Date.now(),
+				feedback: getFeedback(),
+			};
+			
+			await saveResults(result); // calls server action
+			const data = await getResults(); // calls server action
+			setResults(data);
+		} else {
+			setIsProcessing(true)
+			const result: Result = {
+				name: guest,
+				id: '',
+				score,
+				answers,
+				created_at: Date.now(),
+				feedback: getFeedback(),
+			};
+			
+			setResults({ history: [...results.history, result], latest: result });
+		}
+		
+		setIsProcessing(false)
 		router.push('/results');
 	};
 
@@ -96,12 +118,13 @@ export default function Test() {
 					})}
 				</div>
 				{user ? (
-					<button
-						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white cursor-pointer'
+					<Button
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
+						disabled={isProcessing}
 						onClick={handleResults}
 					>
-						See Results
-					</button>
+						{isProcessing ? <><Spinner /> Please wait</>: "See Results"} 
+					</Button>
 				) : (
 					<div className='flex flex-row justify-between w-md'>
 						<input
@@ -112,10 +135,10 @@ export default function Test() {
 						/>
 						<Button
 							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer'
-							disabled={!guest}
+							disabled={!guest || isProcessing}
 							onClick={handleResults}
 						>
-							See Results
+							<Spinner /> See Results
 						</Button>
 					</div>
 				)}

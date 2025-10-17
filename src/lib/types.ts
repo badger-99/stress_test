@@ -27,7 +27,7 @@ export interface Result {
 	id: string;
 	score: number;
 	answers: Record<string, Answer>;
-	time: number;
+	created_at: number;
 	feedback: Feedback;
 }
 
