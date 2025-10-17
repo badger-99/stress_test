@@ -32,7 +32,7 @@ export default function Home() {
 								Take Test
 							</Link>
 							<Link
-								href='#'
+								href='/history'
 								className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white w-[8rem]'
 							>
 								See History
