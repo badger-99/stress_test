@@ -53,7 +53,6 @@ export default function HistoryPage() {
 	}, [data]);
 
 	const handlePointClick = (entry: any) => {
-		Cookies.set('selected_result_id', entry.id, { expires: 1 });
 		router.push(`/results/${entry.id}`);
 	};
 

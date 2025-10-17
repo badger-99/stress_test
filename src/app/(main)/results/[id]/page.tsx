@@ -1,6 +1,6 @@
 'use client';
 
-import Cookies from 'js-cookie';
+import { useParams } from 'next/navigation';
 import { useResults } from '@/providers/results-provider';
 import { useEffect, useState } from 'react';
 import { Report } from '@/components/report';
@@ -11,9 +11,9 @@ import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
 
 export default function Results() {
+  const { id } = useParams<{ id: string }>();
 	const { results } = useResults();
 	const { user } = useUser();
-	const [selected, setSelected] = useState<any>(null);
 
 	if (results.history.length < 1) {
 		return (
@@ -30,13 +30,7 @@ export default function Results() {
 		);
 	}
 
-	useEffect(() => {
-		const id = Cookies.get('selected_result_id');
-		if (id) {
-			const found = results.history.find((r) => r.id == id);
-			setSelected(found || null);
-		}
-	}, [results]);
+	const selected = results.history.find((r) => r.id == id);
 
 	if (!selected) return <p>Loading result...</p>;
 
