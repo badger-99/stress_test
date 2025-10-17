@@ -61,7 +61,7 @@ export default function HistoryPage() {
 
 	return (
 		<div className='flex flex-col items-center justify-center w-full min-h-screen p-8 gap-4'>
-			<h1 className='text-2xl font-semibold text-foreground'>Your Stress History</h1>
+			<h1 className='text-2xl font-semibold text-foreground'>Your Wellness History</h1>
 			<p className='text-muted-foreground text-sm mb-4'>
 				Track how your stress levels changed over time.
 			</p>
