@@ -2,9 +2,19 @@ import ThemeToggle from '@/components/theme-toggle';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
+async function deleteCookie() {
+	'use server';
+	const cookieStore = await cookies();
+	cookieStore.delete('signup_email');
+}
+
 export default async function InfoPage() {
 	const cookieStore = await cookies();
 	const email = cookieStore.get('signup_email')?.value ?? 'm@example.com';
+
+	if (cookieStore.has('signup_email')) {
+		await deleteCookie();
+	}
 
 	return (
 		<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8'>
