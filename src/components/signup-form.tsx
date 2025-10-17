@@ -82,7 +82,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 									Sign up with Google
 								</Button>
 								<FieldDescription className='px-6 text-center'>
-									Already have an account? <Link href='/auth/login'>Log in</Link>
+									Already have an account?{' '}
+									<Link href='/auth/login' className=' text-blue-400'>
+										Log in
+									</Link>
 								</FieldDescription>
 							</Field>
 						</FieldGroup>

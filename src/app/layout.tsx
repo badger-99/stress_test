@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers";
-import Header from "../components/header";
 import { getUser } from "@/lib/supabase/server";
 
 const geistSans = Geist({
@@ -28,9 +27,8 @@ export default async function RootLayout({
   const user = await getUser()
   return (
 		<html lang='en' suppressHydrationWarning={true}>
-			<body className={`flex flex-col min-h-screen pt-19 ${geistSans.variable} ${geistMono.variable} antialiased`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers user={user}>
-          <Header />
           {children}
         </Providers>
 			</body>
