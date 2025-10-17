@@ -36,11 +36,6 @@ export function AppSidebar({ user }: { user: User | null }) {
 			url: '/results',
 			icon: ClipboardPlus,
 		},
-		{
-			title: 'History',
-			url: '#',
-			icon: ChartColumn,
-		},
 	];
 
 	return (
@@ -81,6 +76,20 @@ export function AppSidebar({ user }: { user: User | null }) {
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						))}
+						{user && <SidebarMenuItem
+							key='History'
+							className={`${pathname == '/history' && 'border border-blue-400 rounded-lg'}`}
+						>
+							<SidebarMenuButton
+								className={`${pathname == '/history' && 'rounded-lg hover:bg-transparent'}`}
+								asChild
+							>
+								<Link href='/history'>
+									<ChartColumn />
+									<span>History</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>}
 					</SidebarMenu>
 				</SidebarGroupContent>
 				<SidebarGroup />

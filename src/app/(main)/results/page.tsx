@@ -6,27 +6,33 @@ import { Report } from '@/components/report';
 import { useEffect } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
-
+import Link from 'next/link';
+import { useUser } from '@/providers/user-provider';
 
 export default function Results() {
-  const router = useRouter();
-  const { results } = useResults();
+	const router = useRouter();
+	const { results } = useResults();
+	const { user } = useUser();
 
-  useEffect(() => {
-		if (!results.latest || !results.history) {
-			router.push('/');
-		}
-	}, [results, router]);
-
-	// If redirecting, avoid rendering rest of component
 	if (!results.latest || !results.history) {
-		return null;
+		return (
+			<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8 gap-4 text-2xl'>
+				<p>There are no results to display,</p>
+				<div>
+					Please take a{' '}
+					<Link href='/test' className=' text-blue-400'>
+						test
+					</Link>{' '}
+					first.
+				</div>
+			</div>
+		);
 	}
 
-  const latest = results.latest!
+	const latest = results.latest!;
 
-  const handleDownload = async () => {
-    const blob = await pdf(<PDFReport data={latest} />).toBlob();
+	const handleDownload = async () => {
+		const blob = await pdf(<PDFReport data={latest} />).toBlob();
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
@@ -35,19 +41,34 @@ export default function Results() {
 		URL.revokeObjectURL(url);
 	};
 
-  return (
-		<div className='flex-1 p-4'>
-			Results displayed on this page.
-			<div className='flex flex-row w-full p-8 justify-center gap-26'>
+	return (
+		<div className='flex-1 p-4 mt-8 text-center'>
+			<div className='text-2xl font-semibold mb-5'>Test Results</div>
+			<div className='flex flex-row w-full justify-center gap-18'>
 				<div id='report'>
 					<Report data={latest}></Report>
 				</div>
-				<button
-					className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer'
-					onClick={handleDownload}
-				>
-					Download PDF
-				</button>
+				<div>
+					{user ? (
+						<button
+							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer'
+							onClick={handleDownload}
+						>
+							Download PDF
+						</button>
+					) : (
+						<div className='text-center w-fit'>
+							<Link href='/auth/signup' className=' text-blue-400'>
+								Sign up
+							</Link>{' '}
+							or{' '}
+							<Link href='/auth/login' className=' text-blue-400'>
+								Log in
+							</Link>{' '}
+							to generate PDF report
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
