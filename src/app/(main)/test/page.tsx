@@ -139,7 +139,7 @@ export default function Test() {
 							disabled={!guest || isProcessing}
 							onClick={handleResults}
 						>
-							<Spinner /> See Results
+							{isProcessing && <Spinner />} See Results
 						</Button>
 					</div>
 				)}

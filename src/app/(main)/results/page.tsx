@@ -7,10 +7,14 @@ import { PDFReport } from '@/components/pdf-report';
 import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
+import Cookies from 'js-cookie';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Results() {
 	const { results } = useResults();
 	const { user } = useUser();
+	const router = useRouter();
 
 	if (!results.latest || !results.history) {
 		return (
@@ -28,8 +32,12 @@ export default function Results() {
 	}
 
 	const latest = results.latest!;
-	latest.name = user?.user_metadata.name;
-	const name = firstName(user?.user_metadata.name)
+
+	if (user) {
+		latest.name = user.user_metadata.name;
+	}
+
+	const name = user ? firstName(user.user_metadata.name) : latest.name;
 
 	const handleDownload = async () => {
 		const blob = await pdf(<PDFReport data={latest} />).toBlob();
@@ -39,6 +47,11 @@ export default function Results() {
 		link.download = `stress-report-${name.toLowerCase()}.pdf`;
 		link.click();
 		URL.revokeObjectURL(url);
+	};
+
+	const handleNav = (path: string) => {
+		Cookies.set('pending_report', JSON.stringify(latest), { expires: 0.08 }); // ~2 hours
+		router.push(path);
 	};
 
 	return (
@@ -58,14 +71,25 @@ export default function Results() {
 						</button>
 					) : (
 						<div className='text-center w-fit'>
-							<Link href='/auth/signup' className=' text-blue-400'>
-								Sign up
-							</Link>{' '}
-							or{' '}
-							<Link href='/auth/login' className=' text-blue-400'>
-								Log in
-							</Link>{' '}
-							to generate PDF report
+							<div>
+								<Button
+									variant='link'
+									onClick={() => handleNav('/auth/signup')}
+									className=' text-blue-500 text-lg'
+								>
+									Sign up
+								</Button>{' '}
+								or{' '}
+								<Button
+									variant='link'
+									onClick={() => handleNav('/auth/signup')}
+									className=' text-blue-500 text-lg'
+								>
+									Log in
+								</Button>
+							</div>
+							<p>to generate PDF report.</p>
+							<p>(We will keep you results for you 😉)</p>
 						</div>
 					)}
 				</div>

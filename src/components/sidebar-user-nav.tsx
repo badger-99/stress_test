@@ -93,7 +93,7 @@ export function NavUser({ user, initials }: Props) {
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem asChild>
-							<button onClick={handleLogout}>
+							<button className='w-full' onClick={handleLogout}>
 								<LogOut />
 								Log out
 							</button>
