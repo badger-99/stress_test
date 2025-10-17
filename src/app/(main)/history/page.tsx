@@ -130,7 +130,6 @@ export default function HistoryPage() {
 								fill: '#3b82f6',
 								stroke: '#1e40af',
 								strokeWidth: 2,
-								onClick: (_, index) => handlePointClick(data[index]),
 							}}
 							dot={<CustomDot onClick={handlePointClick} />}
 						/>
