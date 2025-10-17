@@ -74,7 +74,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 							/>
 							<FieldDescription>Please confirm your password.</FieldDescription>
 							<div className={`text-destructive ${valid && 'invisible'}`}>
-								Passwords don't match!
+								Passwords don&apos;t match!
 							</div>
 						</Field>
 						<FieldGroup>

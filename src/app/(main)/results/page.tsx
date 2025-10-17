@@ -1,16 +1,14 @@
 'use client';
 
 import { useResults } from '@/providers/results-provider';
-import { useRouter } from 'next/navigation';
 import { Report } from '@/components/report';
-import { useEffect } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
 import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
+import { firstName } from '@/lib/utils';
 
 export default function Results() {
-	const router = useRouter();
 	const { results } = useResults();
 	const { user } = useUser();
 
@@ -30,13 +28,14 @@ export default function Results() {
 	}
 
 	const latest = results.latest!;
+	const name = firstName(latest.name)
 
 	const handleDownload = async () => {
 		const blob = await pdf(<PDFReport data={latest} />).toBlob();
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = `stress-report-${latest.name}.pdf`;
+		link.download = `stress-report-${name.toLowerCase()}.pdf`;
 		link.click();
 		URL.revokeObjectURL(url);
 	};

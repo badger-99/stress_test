@@ -3,8 +3,8 @@
 import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
-import { Answer, Feedback, Result } from '@/lib/types';
-import { insights, user } from '@/lib/data';
+import { Answer, Result } from '@/lib/types';
+import { insights } from '@/lib/data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/user-provider';
