@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers";
 import { getUser } from "@/lib/supabase/server";
+import { getQuestions } from "@/lib/db/elevated-queries";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +26,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getUser()
+  const questions = await getQuestions()
   return (
 		<html lang='en' suppressHydrationWarning={true}>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers user={user}>
+        <Providers user={user} questions={questions}>
           {children}
         </Providers>
 			</body>

@@ -35,3 +35,9 @@ export interface Results {
 	history: Result[];
 	latest: Result | null;
 }
+
+export interface Insight {
+	stress_level: string;
+	description: string;
+	recommendations: string[];
+}

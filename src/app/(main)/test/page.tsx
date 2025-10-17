@@ -1,6 +1,6 @@
 'use client';
 
-import { stress_test } from '@/lib/questions';
+
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
 import { Answer, Result } from '@/lib/types';
@@ -9,17 +9,17 @@ import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/user-provider';
 import { Button } from '@/components/ui/button';
+import { useQuestions } from '@/providers/questions-provider';
 
 export default function Test() {
-	const suite = stress_test.questions;
 	const router = useRouter();
+	const {questions} = useQuestions();
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [guest, setGuest] = useState('');
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
 		const initialAnswers: Record<string, Answer> = {};
-		Object.keys(suite).forEach((qid) => {
-			const q = suite[qid];
+		questions.forEach((q) => {
 			initialAnswers[q.id] = {
 				id: q.id,
 				value: 1,
@@ -84,8 +84,7 @@ export default function Test() {
 				</div>
 
 				<div className='flex flex-col gap-4 w-3xl'>
-					{Object.keys(suite).map((question) => {
-						const q = suite[question];
+					{questions.map((q) => {
 						return (
 							<QuestionCard
 								key={q.id}
