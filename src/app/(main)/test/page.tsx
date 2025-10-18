@@ -135,7 +135,7 @@ export default function Test() {
 							onChange={(e) => setGuest(e.target.value)}
 						/>
 						<Button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer'
+							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
 							disabled={!guest || isProcessing}
 							onClick={handleResults}
 						>

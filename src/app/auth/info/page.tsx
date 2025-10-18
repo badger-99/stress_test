@@ -1,6 +1,5 @@
 'use client';
 import ThemeToggle from '@/components/theme-toggle';
-import { deleteCookie } from '@/lib/server_actions/cookies';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
