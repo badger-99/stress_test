@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 });
 
 export function PDFReport({ data }: { data: Result }) {
-	const date = new Date(data.time).toLocaleString();
+	const date = new Date(data.created_at).toLocaleString();
 
 	return (
 		<Document>
