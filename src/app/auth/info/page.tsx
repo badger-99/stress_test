@@ -3,17 +3,25 @@ import ThemeToggle from '@/components/theme-toggle';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function InfoPage() {
-	const [email, setEmail] = useState('m@example.com');
+	const router = useRouter()
+	const [email, setEmail] = useState<string|null>(null);
 	const savedEmail = Cookies.get('signup_email');
 
 	useEffect(() => {
 		if (savedEmail) {
 			setEmail(savedEmail);
 			Cookies.remove('signup_email');
+		} else {
+			router.replace('/')
 		}
 	}, []);
+
+	if (!email) {
+		return null
+	}
 
 	return (
 		<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8'>
