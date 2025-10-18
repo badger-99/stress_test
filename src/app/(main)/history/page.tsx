@@ -12,10 +12,20 @@ import {
 	Tooltip,
 	ResponsiveContainer,
 	CartesianGrid,
+	DotProps,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
-import Cookies from 'js-cookie';
 import { cn } from '@/lib/utils';
+import { ResultHistoryItem } from '@/lib/types';
+
+interface CustomDotProps {
+	cx?: number;
+	cy?: number;
+	payload?: ResultHistoryItem;
+	onClick: (entry: ResultHistoryItem) => void;
+}
+
+type ScaleOptions =	'minutes' | 'hours' | 'days'
 
 const formatTime = (timestamp: number, scale: 'minutes' | 'hours' | 'days') => {
 	const date = new Date(timestamp);
@@ -30,8 +40,8 @@ export default function HistoryPage() {
 	const { theme } = useTheme();
 	const router = useRouter();
 
-	const [scale, setScale] = useState<'minutes' | 'hours' | 'days'>('days');
-	const [data, setData] = useState<any[]>([]);
+	const [scale, setScale] = useState<ScaleOptions>('days');
+	const [data, setData] = useState<ResultHistoryItem[]>([]);
 
 	useEffect(() => {
 		if (results.history && results.history.length > 0) {
@@ -52,7 +62,7 @@ export default function HistoryPage() {
 		return Math.round(data.reduce((sum, r) => sum + r.score, 0) / data.length);
 	}, [data]);
 
-	const handlePointClick = (entry: any) => {
+	const handlePointClick = (entry: ResultHistoryItem) => {
 		router.push(`/results/${entry.id}`);
 	};
 
@@ -70,7 +80,7 @@ export default function HistoryPage() {
 				{['minutes', 'hours', 'days'].map((s) => (
 					<Button
 						key={s}
-						onClick={() => setScale(s as any)}
+						onClick={() => setScale(s as ScaleOptions)}
 						variant={scale === s ? 'default' : 'outline'}
 						className={cn(
 							'text-sm capitalize',
@@ -143,7 +153,7 @@ export default function HistoryPage() {
 	);
 }
 
-function CustomDot({ cx, cy, payload, onClick }: any) {
+function CustomDot({ cx, cy, payload, onClick }: CustomDotProps) {
 	return (
 		<circle
 			cx={cx}
@@ -153,7 +163,9 @@ function CustomDot({ cx, cy, payload, onClick }: any) {
 			stroke='#1e40af'
 			strokeWidth={1.5}
 			style={{ cursor: 'pointer' }}
-			onClick={() => onClick(payload)}
+			onClick={() =>  {
+				if (payload) onClick(payload);
+			}}
 		/>
 	);
 }

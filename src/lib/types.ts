@@ -41,3 +41,12 @@ export interface Insight {
 	description: string;
 	recommendations: string[];
 }
+
+export interface ResultHistoryItem {
+	id: string;
+	name: string;
+	score: number;
+	created_at: number;
+	time: string;
+	index: number;
+}
