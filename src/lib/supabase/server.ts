@@ -70,7 +70,7 @@ export async function signup(formData: FormData) {
 	cookieStore.set({
 		name: 'signup_email',
 		value: data.email,
-		httpOnly: true,
+		httpOnly: false,
 		path: '/',
 		maxAge: 60 * 5, // 5 minutes
 	});

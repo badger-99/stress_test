@@ -19,10 +19,11 @@ export const useResults = () => {
 
 interface ProviderProps {
 	children: React.ReactNode;
+	dbResults: Results;
 }
 
-export const ResultsProvider = ({ children }: ProviderProps) => {
-  const [results, setResults] = useState<Results>({history: [], latest: null})
+export const ResultsProvider = ({ children, dbResults }: ProviderProps) => {
+  const [results, setResults] = useState<Results>(dbResults)
 
 	return <ResultsContext.Provider value={{ results, setResults }}>{children}</ResultsContext.Provider>;
 };

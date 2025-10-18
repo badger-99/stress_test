@@ -1,25 +1,28 @@
 'use client';
 
-import { stress_test } from '@/lib/questions';
 import QuestionCard from '@/components/question';
 import { useEffect, useState } from 'react';
 import { Answer, Result } from '@/lib/types';
-import { insights } from '@/lib/data';
 import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/user-provider';
 import { Button } from '@/components/ui/button';
+import { useQuestions } from '@/providers/questions-provider';
+import { useInsights } from '@/providers/insights-provider';
+import { Spinner } from '@/components/ui/spinner';
+import { getResults, saveResults } from '@/lib/server_actions/results';
 
 export default function Test() {
-	const suite = stress_test.questions;
 	const router = useRouter();
+	const { questions } = useQuestions();
+	const { insights } = useInsights();
 	const { results, setResults } = useResults();
 	const [score, setScore] = useState(0);
 	const [guest, setGuest] = useState('');
+	const [isProcessing, setIsProcessing] = useState(false)
 	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
 		const initialAnswers: Record<string, Answer> = {};
-		Object.keys(suite).forEach((qid) => {
-			const q = suite[qid];
+		questions.forEach((q) => {
 			initialAnswers[q.id] = {
 				id: q.id,
 				value: 1,
@@ -49,27 +52,47 @@ export default function Test() {
 
 	const getFeedback = () => {
 		if (score < 20) {
-			return insights[1];
+			return insights[0];
 		} else if (score < 30) {
-			return insights[2];
+			return insights[1];
 		} else if (score < 40) {
-			return insights[3];
+			return insights[2];
 		} else {
-			return insights[4];
+			return insights[3];
 		}
 	};
 
-	const handleResults = () => {
-		const result: Result = {
-			name: user ? user.user_metadata.name : guest,
-			id: user ? user.id : 'guest123',
-			score,
-			answers,
-			time: Date.now(),
-			feedback: getFeedback(),
-		};
-
-		setResults({ history: [...results.history, result], latest: result });
+	const handleResults = async () => {
+		if (user) {
+			setIsProcessing(true)
+			const result: Result = {
+				name: user.user_metadata.name,
+				id: user.id,
+				score,
+				answers,
+				created_at: Date.now(),
+				feedback: getFeedback(),
+			};
+			console.log(result.name)
+			await saveResults(result); // calls server action
+			const data = await getResults(); // calls server action
+			console.log(data.latest?.name)
+			setResults(data);
+		} else {
+			setIsProcessing(true)
+			const result: Result = {
+				name: guest,
+				id: '',
+				score,
+				answers,
+				created_at: Date.now(),
+				feedback: getFeedback(),
+			};
+			
+			setResults({ history: [...results.history, result], latest: result });
+		}
+		
+		setIsProcessing(false)
 		router.push('/results');
 	};
 
@@ -84,8 +107,7 @@ export default function Test() {
 				</div>
 
 				<div className='flex flex-col gap-4 w-3xl'>
-					{Object.keys(suite).map((question) => {
-						const q = suite[question];
+					{questions.map((q) => {
 						return (
 							<QuestionCard
 								key={q.id}
@@ -97,12 +119,13 @@ export default function Test() {
 					})}
 				</div>
 				{user ? (
-					<button
-						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white cursor-pointer'
+					<Button
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
+						disabled={isProcessing}
 						onClick={handleResults}
 					>
-						See Results
-					</button>
+						{isProcessing ? <><Spinner /> Please wait</>: "See Results"} 
+					</Button>
 				) : (
 					<div className='flex flex-row justify-between w-md'>
 						<input
@@ -112,11 +135,11 @@ export default function Test() {
 							onChange={(e) => setGuest(e.target.value)}
 						/>
 						<Button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer'
-							disabled={!guest}
+							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
+							disabled={!guest || isProcessing}
 							onClick={handleResults}
 						>
-							See Results
+							{isProcessing && <Spinner />} See Results
 						</Button>
 					</div>
 				)}

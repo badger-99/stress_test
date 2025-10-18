@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useResults } from '@/providers/results-provider';
 import { Report } from '@/components/report';
 import { pdf } from '@react-pdf/renderer';
@@ -7,39 +8,36 @@ import { PDFReport } from '@/components/pdf-report';
 import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 
 export default function Results() {
+  const { id } = useParams<{ id: string }>();
 	const { results } = useResults();
 	const { user } = useUser();
-	const router = useRouter();
 
-	if (!results.latest || !results.history) {
+	if (results.history.length < 1) {
 		return (
 			<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8 gap-4 text-2xl'>
-				<p>There are no results to display,</p>
+				<p>There are no results in your history to display,</p>
 				<div>
-					Please take a{' '}
+					Please take your first{' '}
 					<Link href='/test' className=' text-blue-400'>
 						test
-					</Link>{' '}
-					first.
+					</Link>
+					.
 				</div>
 			</div>
 		);
 	}
 
-	const latest = results.latest!;
+	const selected = results.history.find((r) => r.id == id);
 
-	if (user) {
-		latest.name = user.user_metadata.name;
-	}
+	if (!selected) return <p>Loading result...</p>;
 
-	const name = user ? firstName(user.user_metadata.name) : latest.name;
+	selected.name = user?.user_metadata.name;
+	const name = firstName(user?.user_metadata.name);
 
 	const handleDownload = async () => {
-		const blob = await pdf(<PDFReport data={latest} />).toBlob();
+		const blob = await pdf(<PDFReport data={selected} />).toBlob();
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
@@ -48,19 +46,12 @@ export default function Results() {
 		URL.revokeObjectURL(url);
 	};
 
-	const handleNav = (path: string) => {
-		 if (typeof window !== 'undefined') {
-				localStorage.setItem('pending_report', JSON.stringify(latest));
-			}
-		router.push(path);
-	};
-
 	return (
 		<div className='flex-1 p-4 mt-8 text-center'>
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
 			<div className='flex flex-row w-full justify-center gap-18'>
 				<div id='report'>
-					<Report data={latest}></Report>
+					<Report data={selected}></Report>
 				</div>
 				<div>
 					{user ? (
@@ -72,25 +63,14 @@ export default function Results() {
 						</button>
 					) : (
 						<div className='text-center w-fit'>
-							<div>
-								<Button
-									variant='link'
-									onClick={() => handleNav('/auth/signup')}
-									className=' text-blue-500 text-lg'
-								>
-									Sign up
-								</Button>{' '}
-								or{' '}
-								<Button
-									variant='link'
-									onClick={() => handleNav('/auth/signup')}
-									className=' text-blue-500 text-lg'
-								>
-									Log in
-								</Button>
-							</div>
-							<p>to generate PDF report.</p>
-							<p>(We will keep you results for you 😉)</p>
+							<Link href='/auth/signup' className=' text-blue-400'>
+								Sign up
+							</Link>{' '}
+							or{' '}
+							<Link href='/auth/login' className=' text-blue-400'>
+								Log in
+							</Link>{' '}
+							to generate PDF report
 						</div>
 					)}
 				</div>

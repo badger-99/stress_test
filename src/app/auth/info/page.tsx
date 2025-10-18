@@ -1,10 +1,27 @@
+'use client';
 import ThemeToggle from '@/components/theme-toggle';
-import { cookies } from 'next/headers';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default async function InfoPage() {
-	const cookieStore = await cookies();
-	const email = cookieStore.get('signup_email')?.value ?? 'm@example.com';
+export default function InfoPage() {
+	const router = useRouter()
+	const [email, setEmail] = useState<string|null>(null);
+	const savedEmail = Cookies.get('signup_email');
+
+	useEffect(() => {
+		if (savedEmail) {
+			setEmail(savedEmail);
+			Cookies.remove('signup_email');
+		} else {
+			router.replace('/')
+		}
+	}, [router, savedEmail]);
+
+	if (!email) {
+		return null
+	}
 
 	return (
 		<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8'>

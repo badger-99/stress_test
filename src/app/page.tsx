@@ -3,9 +3,24 @@ import Header from '@/components/header';
 import { firstName } from '@/lib/utils';
 import { useUser } from '@/providers/user-provider';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
 	const { user } = useUser();
+	const router = useRouter();
+	const [ready, setReady] = useState(false);
+
+	useEffect(() => {
+		const savedReport = localStorage.getItem('pending_report');
+		if (savedReport) {
+			router.push('/auth/welcome');
+		} else {
+			setReady(true);
+		}
+	}, [router]);
+
+	if (!ready) return null;
 
 	if (user) {
 		const name = firstName(user.user_metadata.name);
@@ -15,9 +30,7 @@ export default function Home() {
 				<Header />
 				<div className='flex-1 flex justify-center w-full'>
 					<div className='flex flex-col text-center gap-4 mt-32'>
-						{/* <div> */}
 						<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-						{/* </div> */}
 						<div className='max-w-2xl'>
 							<p>
 								Take a quick, and friendly self-assessment to explore your current stress levels and
@@ -32,7 +45,7 @@ export default function Home() {
 								Take Test
 							</Link>
 							<Link
-								href='#'
+								href='/history'
 								className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white w-[8rem]'
 							>
 								See History
