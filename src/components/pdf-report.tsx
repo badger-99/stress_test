@@ -114,14 +114,14 @@ const styles = StyleSheet.create({
 });
 
 export function PDFReport({ data }: { data: Result }) {
-	const date = new Date(data.time).toLocaleString();
+	const date = new Date(data.created_at).toLocaleString();
 
 	return (
 		<Document>
 			<Page size='A4' style={styles.page}>
 				{/* Header */}
 				<View style={styles.headerRow}>
-					<Image style={styles.logo} src='/st_logo.png' />
+					<Image style={styles.logo} src='/st_logo-3.png' />
 					<View style={styles.headerText}>
 						<Text style={styles.title}>Stress Test</Text>
 						<Text style={styles.subtitle}>Emotional Well-Being Check-In</Text>

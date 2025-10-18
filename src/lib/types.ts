@@ -13,6 +13,7 @@ export interface Answer {
 	id: string;
 	value: number;
 	category: string;
+	reverse_score: boolean;
 }
 
 export interface Feedback {
@@ -26,11 +27,26 @@ export interface Result {
 	id: string;
 	score: number;
 	answers: Record<string, Answer>;
-	time: number;
+	created_at: number;
 	feedback: Feedback;
 }
 
 export interface Results {
 	history: Result[];
 	latest: Result | null;
+}
+
+export interface Insight {
+	stress_level: string;
+	description: string;
+	recommendations: string[];
+}
+
+export interface ResultHistoryItem {
+	id: string;
+	name: string;
+	score: number;
+	created_at: number;
+	time: string;
+	index: number;
 }

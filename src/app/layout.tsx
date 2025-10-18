@@ -1,17 +1,19 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/providers";
-import Header from "../components/header";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import { Providers } from '@/providers';
+import { getUser } from '@/lib/supabase/server';
+import { getInsights, getQuestions } from '@/lib/db/elevated-queries';
+import { getResults } from '@/lib/server_actions/results';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+	variable: '--font-geist-sans',
+	subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+	variable: '--font-geist-mono',
+	subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
@@ -19,18 +21,21 @@ export const metadata: Metadata = {
 	description: 'Check-in for emotional well-being',
 };
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
+	const user = await getUser();
+	const questions = await getQuestions();
+  const insights = await getInsights();
+	const results = await getResults();
+	return (
 		<html lang='en' suppressHydrationWarning={true}>
-			<body className={`flex flex-col min-h-screen pt-19 ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Providers user={user} questions={questions} insights={insights} results={results}>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);
