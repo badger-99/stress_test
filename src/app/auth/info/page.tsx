@@ -1,15 +1,20 @@
-'use server';
+'use client';
 import ThemeToggle from '@/components/theme-toggle';
-import { cookies } from 'next/headers';
+import { deleteCookie } from '@/lib/server_actions/cookies';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export default async function InfoPage() {
-	const cookieStore = await cookies();
-	const email = cookieStore.get('signup_email')?.value ?? 'm@example.com';
+export default function InfoPage() {
+	const [email, setEmail] = useState('m@example.com');
+	const savedEmail = Cookies.get('signup_email');
 
-	if (cookieStore.has('signup_email')) {
-		(await cookies()).delete('signup_email');
-	}
+	useEffect(() => {
+		if (savedEmail) {
+			setEmail(savedEmail);
+			Cookies.remove('signup_email');
+		}
+	}, []);
 
 	return (
 		<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8'>
