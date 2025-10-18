@@ -3,89 +3,29 @@ import Header from '@/components/header';
 import { firstName } from '@/lib/utils';
 import { useUser } from '@/providers/user-provider';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
-import { Result } from '@/lib/types';
-import { getResults, saveResults } from '@/lib/server_actions/results';
-import { useResults } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import { Spinner } from '@/components/ui/spinner';
+import { useEffect } from 'react';
 
 export default function Home() {
 	const { user } = useUser();
-	const { setResults } = useResults();
 	const router = useRouter();
-	const [isPending, setIsPending] = useState(false);
-	const savedReport = Cookies.get('pending_report');
 
 	useEffect(() => {
-		if (user && savedReport) {
-			const savePendingReport = async () => {
-				setIsPending(true);
-				const report = JSON.parse(savedReport) as Result;
-				report.id = user.id;
-				await saveResults(report);
-				const data = await getResults();
-				setResults(data);
-				Cookies.remove('pending_report');
-				setIsPending(false);
-			};
-			savePendingReport();
+		const savedReport = localStorage.getItem('pending_report');
+		if (savedReport) {
+			router.push('/auth/welcome');
 		}
-	}, [user, savedReport, setResults]);
+	}, [router]);
 
 	if (user) {
 		const name = firstName(user.user_metadata.name);
 
-		if (savedReport) {
-			const handleNav = (path: string) => {
-				router.push(path);
-			};
-
-			return (
-				<div className='flex flex-col min-h-screen pt-19'>
-					<Header />
-					<div className='flex-1 flex justify-center w-full'>
-						<div className='flex flex-col text-center gap-4 mt-32'>
-							<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-							<div className='max-w-2xl'>
-								<p>
-									Thank you for signing up with us, and we hope this tool will add value to your
-									wellbeing!
-								</p>
-							</div>
-							<div className='flex justify-center gap-8 p-8'>
-								<Button
-									className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white'
-									disabled={isPending}
-									onClick={() => handleNav('/results')}
-								>
-									{isPending ? (
-										<>
-											<Spinner /> Please wait
-										</>
-									) : (
-										'See Your Results'
-									)}
-								</Button>
-							</div>
-						</div>
-					</div>
-					<footer className='text-center text-xs text-gray-600 py-6'>
-						Made with ♥ — StressTest Prototype ©2025
-					</footer>
-				</div>
-			);
-		}
 		return (
 			<div className='flex flex-col min-h-screen pt-19'>
 				<Header />
 				<div className='flex-1 flex justify-center w-full'>
 					<div className='flex flex-col text-center gap-4 mt-32'>
-						{/* <div> */}
 						<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-						{/* </div> */}
 						<div className='max-w-2xl'>
 							<p>
 								Take a quick, and friendly self-assessment to explore your current stress levels and

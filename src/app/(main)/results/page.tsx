@@ -7,7 +7,6 @@ import { PDFReport } from '@/components/pdf-report';
 import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
-import Cookies from 'js-cookie';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -50,7 +49,9 @@ export default function Results() {
 	};
 
 	const handleNav = (path: string) => {
-		Cookies.set('pending_report', JSON.stringify(latest), { expires: 0.08 }); // ~2 hours
+		 if (typeof window !== 'undefined') {
+				localStorage.setItem('pending_report', JSON.stringify(latest));
+			}
 		router.push(path);
 	};
 
