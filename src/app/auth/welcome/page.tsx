@@ -6,16 +6,25 @@ import { useResults } from '@/providers/results-provider';
 import { useUser } from '@/providers/user-provider';
 import { useState, useEffect } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import Header from '@/components/header';
 import { firstName } from '@/lib/utils';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
 	const { user } = useUser();
 	const { setResults } = useResults();
 	const [isPending, setIsPending] = useState(false);
-	const savedReport = localStorage.getItem('pending_report');
+	const [savedReport, setSavedReport] = useState<string | null>(null)
 	const name = firstName(user?.user_metadata.name);
+	const router = useRouter()
+	
+	useEffect(() => {
+		const probe = localStorage.getItem('pending_report');
+		setSavedReport(probe);
+		if (!probe) {
+			router.replace('/')
+		}
+	})
 
 	useEffect(() => {
 		if (user && savedReport) {
@@ -34,9 +43,12 @@ export default function Home() {
 		}
 	}, [user, savedReport, setResults]);
 
+	if (!savedReport) {
+		return null
+	}
+
 	return (
 		<div className='flex flex-col min-h-screen pt-19'>
-			<Header />
 			<div className='flex-1 flex justify-center w-full'>
 				<div className='flex flex-col text-center gap-4 mt-32'>
 					<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
