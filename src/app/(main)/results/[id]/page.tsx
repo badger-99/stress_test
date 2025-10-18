@@ -2,7 +2,6 @@
 
 import { useParams } from 'next/navigation';
 import { useResults } from '@/providers/results-provider';
-import { useEffect, useState } from 'react';
 import { Report } from '@/components/report';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';

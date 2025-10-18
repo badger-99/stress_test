@@ -12,7 +12,6 @@ import {
 	Tooltip,
 	ResponsiveContainer,
 	CartesianGrid,
-	DotProps,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

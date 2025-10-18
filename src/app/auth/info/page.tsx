@@ -17,7 +17,7 @@ export default function InfoPage() {
 		} else {
 			router.replace('/')
 		}
-	}, []);
+	}, [router, savedEmail]);
 
 	if (!email) {
 		return null

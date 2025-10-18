@@ -24,7 +24,7 @@ export default function Home() {
 		if (!probe) {
 			router.replace('/')
 		}
-	})
+	},[router])
 
 	useEffect(() => {
 		if (user && savedReport) {
