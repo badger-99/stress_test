@@ -4,18 +4,23 @@ import { firstName } from '@/lib/utils';
 import { useUser } from '@/providers/user-provider';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
 	const { user } = useUser();
 	const router = useRouter();
+	const [ready, setReady] = useState(false);
 
 	useEffect(() => {
 		const savedReport = localStorage.getItem('pending_report');
 		if (savedReport) {
 			router.push('/auth/welcome');
+		} else {
+			setReady(true);
 		}
 	}, [router]);
+
+	if (!ready) return null;
 
 	if (user) {
 		const name = firstName(user.user_metadata.name);
