@@ -83,7 +83,7 @@ export default function Results() {
 								or{' '}
 								<Button
 									variant='link'
-									onClick={() => handleNav('/auth/signup')}
+									onClick={() => handleNav('/auth/login')}
 									className=' text-blue-500 text-lg'
 								>
 									Log in
