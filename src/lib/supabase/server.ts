@@ -40,6 +40,7 @@ export async function logout() {
 
 // Signing up
 export async function signup(formData: FormData) {
+	const isProduction = process.env.NODE_ENV === 'production';
 	const supabase = await createClient();
 
 	// type-casting here for convenience
@@ -53,7 +54,8 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
-    options: {
+		options: {
+			emailRedirectTo: isProduction? '':'http://localhost:3000',
       data: {
         name: data.name,
         full_name: data.name
