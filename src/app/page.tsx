@@ -31,7 +31,7 @@ export default function Home() {
 				<div className='flex-1 flex justify-center w-full h-full items-center'>
 					<div className='flex flex-col text-center gap-4'>
 						<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-						<div className='max-w-2xl px-8'>
+						<div className='max-w-2xl px-5'>
 							<p>
 								Take a quick, and friendly self-assessment to explore your current stress levels and
 								emotional balance. Gain a clearer picture of your overall mental well-being today.
@@ -69,7 +69,7 @@ export default function Home() {
 						<p className='text-2xl font-semibold'>Welcome to StressTest!</p>
 						<p className='text-lg'>The Emotional Well-Being Check-In</p>
 					</div>
-					<div className='max-w-2xl px-8'>
+					<div className='max-w-2xl px-5'>
 						<p>
 							Take a free, quick, and friendly self-assessment to explore your current stress levels
 							and emotional balance. Gain a clearer picture of your overall mental well-being today.
