@@ -49,34 +49,33 @@ export default function Results() {
 	};
 
 	const handleNav = (path: string) => {
-		 if (typeof window !== 'undefined') {
-				localStorage.setItem('pending_report', JSON.stringify(latest));
-			}
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('pending_report', JSON.stringify(latest));
+		}
 		router.push(path);
 	};
 
 	return (
 		<div className='flex-1 p-4 mt-8 text-center'>
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
-			<div className='flex flex-row w-full justify-center gap-18'>
+			<div className='flex flex-col md:flex-row w-full justify-center gap-18'>
 				<div id='report'>
 					<Report data={latest}></Report>
 				</div>
-				<div>
-					{user ? (
-						<button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer'
-							onClick={handleDownload}
-						>
-							Download PDF
-						</button>
-					) : (
+				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto'>
+					<Button
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer w-fit'
+						onClick={handleDownload}
+					>
+						Download PDF
+					</Button>
+					{!user && (
 						<div className='text-center w-fit'>
 							<div>
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/signup')}
-									className=' text-blue-500 text-lg'
+									className=' text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Sign up
 								</Button>{' '}
@@ -84,19 +83,19 @@ export default function Results() {
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/login')}
-									className=' text-blue-500 text-lg'
+									className=' text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Log in
 								</Button>
 							</div>
-							<p>to generate PDF report.</p>
-							<p>(We will keep you results for you 😉)</p>
+							<p>To add these results to your history</p>
+							<p>(We'll make sure they don't get lost 😉)</p>
 						</div>
 					)}
 				</div>
 			</div>
-			<footer className='text-center text-xs text-gray-600 py-6'>
-				Made with ♥ — StressTest Prototype ©2025
+			<footer className='text-center text-xs text-gray-600 py-10'>
+				Alfred M. — StressTest ©2025
 			</footer>
 		</div>
 	);

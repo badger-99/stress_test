@@ -108,7 +108,7 @@ export function AppSidebar({ user }: { user: User | null }) {
 									href='/auth/login'
 									className='border border-foreground bg-blue-500 p-2 rounded-lg'
 								>
-									<LogIn />
+									<LogIn className='text-white' />
 									<span className='font-semibold text-white'>Log in</span>
 								</Link>
 							</SidebarMenuButton>
