@@ -12,8 +12,8 @@ export default function QuestionCard({ question, value, onChange }: Props) {
 			<p className='font-medium wrap-normal'>{question.text}</p>
 			<input
 				type='range'
-				min='1'
-				max='5'
+				min='0'
+				max='100'
 				step='1'
 				value={value}
 				onChange={(e) => onChange(Number(e.target.value))}

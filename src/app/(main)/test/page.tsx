@@ -25,7 +25,7 @@ export default function Test() {
 		questions.forEach((q) => {
 			initialAnswers[q.id] = {
 				id: q.id,
-				value: 1,
+				value: 50,
 				category: q.category,
 				reverse_score: q.reverse_score,
 			};
@@ -41,10 +41,11 @@ export default function Test() {
 	useEffect(() => {
 		let total = 0;
 		Object.values(answers).map((answer) => {
+			const processed = Math.ceil(answer.value / 20); // converting to 1...5 scale
 			if (answer.reverse_score) {
-				total += 6 - answer.value;
+				total += 5 - processed;
 			} else {
-				total += answer.value;
+				total += processed;
 			}
 		});
 		setScore(total);
@@ -65,11 +66,18 @@ export default function Test() {
 	const handleResults = async () => {
 		if (user) {
 			setIsProcessing(true)
+			// converting raw 100-scale answers to 1...5 scale
+			const processedAnswers = Object.fromEntries(
+				Object.entries(answers).map(([k, a]) => [
+					k,
+					{ ...a, value: Math.ceil(a.value / 20) },
+				])
+			);
 			const result: Result = {
 				name: user.user_metadata.name,
 				id: user.id,
 				score,
-				answers,
+				answers: processedAnswers,
 				created_at: Date.now(),
 				feedback: getFeedback(),
 			};
