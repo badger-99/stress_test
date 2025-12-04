@@ -13,17 +13,22 @@ import {
 	SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
-import { BookOpenCheck, ClipboardPlus, ChartColumn, LogIn } from 'lucide-react';
+import { BookOpenCheck, ClipboardPlus, ChartColumn, LogIn, PanelLeftCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
 import { User } from '@supabase/supabase-js';
 import { NavUser } from './sidebar-user-nav';
 import { getInitials } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useSidebar } from '@/components/ui/sidebar';
+import { Button } from './ui/button';
 
 export function AppSidebar({ user }: { user: User | null }) {
 	const pathname = usePathname();
 	const initials = getInitials(user?.user_metadata.name);
+	const { toggleSidebar } = useSidebar();
+	const isMobile = useIsMobile();
 
 	const items = [
 		{
@@ -46,7 +51,7 @@ export function AppSidebar({ user }: { user: User | null }) {
 	return (
 		<Sidebar collapsible='icon' className='bg-secondary'>
 			<SidebarHeader>
-				<SidebarMenu>
+				<SidebarMenu className='flex-row justify-between'>
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild className='hover:bg-transparent'>
 							<Link href='/' className='flex flex-row items-center gap-2'>
@@ -58,6 +63,11 @@ export function AppSidebar({ user }: { user: User | null }) {
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
+						{isMobile && (
+								<Button variant={'ghost'} size={'icon'} onClick={toggleSidebar}>
+									<PanelLeftCloseIcon />
+								</Button>
+						)}
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent className='px-2'>
@@ -93,10 +103,7 @@ export function AppSidebar({ user }: { user: User | null }) {
 					</SidebarMenuItem>
 					<SidebarMenuItem>
 						{!user && (
-							<SidebarMenuButton
-								asChild
-								className='flex justify-center'
-							>
+							<SidebarMenuButton asChild className='flex justify-center'>
 								<Link
 									href='/auth/login'
 									className='border border-foreground bg-blue-500 p-2 rounded-lg'
