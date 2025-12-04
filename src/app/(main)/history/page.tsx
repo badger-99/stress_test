@@ -16,6 +16,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResultHistoryItem } from '@/lib/types';
+import { EmptyHistory } from '@/components/empty-history';
+import { useUser } from '@/providers/user-provider';
 
 interface CustomDotProps {
 	cx?: number;
@@ -24,7 +26,7 @@ interface CustomDotProps {
 	onClick: (entry: ResultHistoryItem) => void;
 }
 
-type ScaleOptions =	'minutes' | 'hours' | 'days'
+type ScaleOptions = 'minutes' | 'hours' | 'days';
 
 const formatTime = (timestamp: number, scale: 'minutes' | 'hours' | 'days') => {
 	const date = new Date(timestamp);
@@ -38,6 +40,7 @@ export default function HistoryPage() {
 	const { results } = useResults();
 	const { theme } = useTheme();
 	const router = useRouter();
+	const { user } = useUser();
 
 	const [scale, setScale] = useState<ScaleOptions>('days');
 	const [data, setData] = useState<ResultHistoryItem[]>([]);
@@ -66,6 +69,10 @@ export default function HistoryPage() {
 	};
 
 	const isDark = theme === 'dark';
+
+	if (data.length < 1) {
+		return <EmptyHistory user={user} />;
+	}
 
 	return (
 		<div className='flex flex-col items-center justify-center w-full min-h-screen p-8 gap-4'>
@@ -100,54 +107,48 @@ export default function HistoryPage() {
 			)}
 
 			{/* Chart */}
-			{data.length > 0 ? (
-				<ResponsiveContainer width='95%' height={400}>
-					<LineChart data={data}>
-						<CartesianGrid
-							strokeDasharray='3 3'
-							stroke={isDark ? 'var(--border)' : 'var(--border)'}
-						/>
-						<XAxis
-							dataKey='time'
-							stroke='var(--muted-foreground)'
-							tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
-						/>
-						<YAxis
-							stroke='var(--muted-foreground)'
-							tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
-							domain={[0, 'dataMax + 5']}
-						/>
-						<Tooltip
-							cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}
-							contentStyle={{
-								backgroundColor: 'var(--background)',
-								border: `1px solid var(--border)`,
-								borderRadius: '0.5rem',
-								color: 'var(--foreground)',
-							}}
-							formatter={(value: number) => [`${value}`, 'Score']}
-							labelStyle={{ color: 'var(--muted-foreground)' }}
-						/>
-						<Line
-							type='monotone'
-							dataKey='score'
-							stroke='#3b82f6'
-							strokeWidth={3}
-							activeDot={{
-								r: 6,
-								fill: '#3b82f6',
-								stroke: '#1e40af',
-								strokeWidth: 2,
-							}}
-							dot={<CustomDot onClick={handlePointClick} />}
-						/>
-					</LineChart>
-				</ResponsiveContainer>
-			) : (
-				<p className='text-muted-foreground text-sm mt-12'>
-					No history yet. Take your first test to see results here!
-				</p>
-			)}
+			<ResponsiveContainer width='95%' height={400}>
+				<LineChart data={data}>
+					<CartesianGrid
+						strokeDasharray='3 3'
+						stroke={isDark ? 'var(--border)' : 'var(--border)'}
+					/>
+					<XAxis
+						dataKey='time'
+						stroke='var(--muted-foreground)'
+						tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+					/>
+					<YAxis
+						stroke='var(--muted-foreground)'
+						tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+						domain={[0, 'dataMax + 5']}
+					/>
+					<Tooltip
+						cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}
+						contentStyle={{
+							backgroundColor: 'var(--background)',
+							border: `1px solid var(--border)`,
+							borderRadius: '0.5rem',
+							color: 'var(--foreground)',
+						}}
+						formatter={(value: number) => [`${value}`, 'Score']}
+						labelStyle={{ color: 'var(--muted-foreground)' }}
+					/>
+					<Line
+						type='monotone'
+						dataKey='score'
+						stroke='#3b82f6'
+						strokeWidth={3}
+						activeDot={{
+							r: 6,
+							fill: '#3b82f6',
+							stroke: '#1e40af',
+							strokeWidth: 2,
+						}}
+						dot={<CustomDot onClick={handlePointClick} />}
+					/>
+				</LineChart>
+			</ResponsiveContainer>
 		</div>
 	);
 }
@@ -162,7 +163,7 @@ function CustomDot({ cx, cy, payload, onClick }: CustomDotProps) {
 			stroke='#1e40af'
 			strokeWidth={1.5}
 			style={{ cursor: 'pointer' }}
-			onClick={() =>  {
+			onClick={() => {
 				if (payload) onClick(payload);
 			}}
 		/>
