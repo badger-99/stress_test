@@ -9,6 +9,7 @@ import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import EmptyResults from '@/components/empty-results';
 
 export default function Results() {
 	const { results } = useResults();
@@ -17,16 +18,7 @@ export default function Results() {
 
 	if (!results.latest || !results.history) {
 		return (
-			<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8 gap-4 text-2xl'>
-				<p>There are no results to display,</p>
-				<div>
-					Please take a{' '}
-					<Link href='/test' className=' text-blue-400'>
-						test
-					</Link>{' '}
-					first.
-				</div>
-			</div>
+			<EmptyResults />
 		);
 	}
 
