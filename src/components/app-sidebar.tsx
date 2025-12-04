@@ -23,12 +23,14 @@ import { getInitials } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSidebar } from '@/components/ui/sidebar';
 import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 export function AppSidebar({ user }: { user: User | null }) {
 	const pathname = usePathname();
 	const initials = getInitials(user?.user_metadata.name);
 	const { toggleSidebar } = useSidebar();
 	const isMobile = useIsMobile();
+	const router = useRouter();
 
 	const items = [
 		{
@@ -48,6 +50,11 @@ export function AppSidebar({ user }: { user: User | null }) {
 		},
 	];
 
+	const handleNav = (path: string) => {
+		router.push(path);
+		toggleSidebar();
+	};
+
 	return (
 		<Sidebar collapsible='icon' className='bg-secondary'>
 			<SidebarHeader>
@@ -63,11 +70,11 @@ export function AppSidebar({ user }: { user: User | null }) {
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
-						{isMobile && (
-								<Button variant={'ghost'} size={'icon'} onClick={toggleSidebar}>
-									<PanelLeftCloseIcon />
-								</Button>
-						)}
+					{isMobile && (
+						<Button variant={'ghost'} size={'icon'} onClick={toggleSidebar}>
+							<PanelLeftCloseIcon />
+						</Button>
+					)}
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent className='px-2'>
@@ -75,22 +82,37 @@ export function AppSidebar({ user }: { user: User | null }) {
 				<SidebarGroup />
 				<SidebarGroupContent>
 					<SidebarMenu>
-						{items.map((item) => (
-							<SidebarMenuItem
-								key={item.title}
-								className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
-							>
-								<SidebarMenuButton
-									className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
-									asChild
+						{items.map((item) =>
+							isMobile ? (
+								<SidebarMenuItem
+									key={item.title}
+									className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
 								>
-									<Link href={item.url}>
+									<SidebarMenuButton
+										className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
+										onClick={() => handleNav(item.url)}
+									>
 										<item.icon />
 										<span>{item.title}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						))}
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							) : (
+								<SidebarMenuItem
+									key={item.title}
+									className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
+								>
+									<SidebarMenuButton
+										className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
+										asChild
+									>
+										<Link href={item.url}>
+											<item.icon />
+											<span>{item.title}</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							)
+						)}
 					</SidebarMenu>
 				</SidebarGroupContent>
 				<SidebarGroup />

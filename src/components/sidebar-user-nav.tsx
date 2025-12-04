@@ -60,7 +60,7 @@ export function NavUser({ user, initials }: Props) {
 							<div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
 								<Avatar className='h-8 w-8 rounded-lg'>
 									<AvatarImage alt={user.user_metadata.name} />
-									<AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+								<AvatarFallback className='rounded-lg'>{ initials }</AvatarFallback>
 								</Avatar>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
 									<span className='truncate font-medium'>{user.user_metadata.name}</span>
