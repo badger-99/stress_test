@@ -56,13 +56,13 @@ export default function Results() {
 	};
 
 	return (
-		<div className='flex-1 p-4 mt-8 text-center'>
+		<div className='flex-1 p-4 mt-16 text-center'>
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
-			<div className='flex flex-col md:flex-row w-full justify-center gap-18'>
-				<div id='report'>
+			<div className='flex flex-col lg:flex-row w-full justify-center lg:items-start gap-6 lg:gap-12'>
+				<div id='report' className='max-w-2xl mx-auto lg:mx-0'>
 					<Report data={latest}></Report>
 				</div>
-				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto'>
+				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto lg:mx-0'>
 					<Button
 						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer w-fit'
 						onClick={handleDownload}
@@ -75,7 +75,7 @@ export default function Results() {
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/signup')}
-									className=' text-blue-500 text-lg border border-blue-500 cursor-pointer'
+									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Sign up
 								</Button>{' '}
@@ -83,7 +83,7 @@ export default function Results() {
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/login')}
-									className=' text-blue-500 text-lg border border-blue-500 cursor-pointer'
+									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Log in
 								</Button>
