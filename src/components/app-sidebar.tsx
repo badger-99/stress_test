@@ -13,7 +13,7 @@ import {
 	SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
-import { BookOpenCheck, ClipboardPlus, ChartColumn } from 'lucide-react';
+import { BookOpenCheck, ClipboardPlus, ChartColumn, LogIn } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
@@ -35,6 +35,11 @@ export function AppSidebar({ user }: { user: User | null }) {
 			title: 'Result',
 			url: '/results',
 			icon: ClipboardPlus,
+		},
+		{
+			title: 'History',
+			url: '/history',
+			icon: ChartColumn,
 		},
 	];
 
@@ -76,40 +81,34 @@ export function AppSidebar({ user }: { user: User | null }) {
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						))}
-						{user && (
-							<SidebarMenuItem
-								key='History'
-								className={`${pathname == '/history' && 'border border-blue-400 rounded-lg'}`}
-							>
-								<SidebarMenuButton
-									className={`${pathname == '/history' && 'rounded-lg hover:bg-transparent'}`}
-									asChild
-								>
-									<Link href='/history'>
-										<ChartColumn />
-										<span>History</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						)}
 					</SidebarMenu>
 				</SidebarGroupContent>
 				<SidebarGroup />
 			</SidebarContent>
 			<SidebarFooter className='pb-6'>
-				<div className='w-full ml-2 mb-2 pr-3 flex flex-row justify-between'>
-					<ThemeToggle />{' '}
-					{!user && (
-						<Link
-							href='/auth/login'
-							className='border border-foreground bg-blue-500 p-2 rounded-lg font-semibold text-white w-24 text-center'
-						>
-							Log in
-						</Link>
-					)}
-				</div>
-
-				{user && <NavUser user={user} initials={initials} />}
+				<SidebarMenu>
+					<SidebarMenuItem>
+						{' '}
+						<ThemeToggle />{' '}
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{!user && (
+							<SidebarMenuButton
+								asChild
+								className='flex justify-center'
+							>
+								<Link
+									href='/auth/login'
+									className='border border-foreground bg-blue-500 p-2 rounded-lg'
+								>
+									<LogIn />
+									<span className='font-semibold text-white'>Log in</span>
+								</Link>
+							</SidebarMenuButton>
+						)}
+					</SidebarMenuItem>
+					{user && <NavUser user={user} initials={initials} />}
+				</SidebarMenu>
 			</SidebarFooter>
 		</Sidebar>
 	);

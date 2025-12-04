@@ -33,7 +33,6 @@ export function NavUser({ user, initials }: Props) {
 	};
 
 	return (
-		<SidebarMenu>
 			<SidebarMenuItem>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -101,6 +100,5 @@ export function NavUser({ user, initials }: Props) {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>
-		</SidebarMenu>
 	);
 }
