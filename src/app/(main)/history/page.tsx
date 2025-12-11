@@ -74,6 +74,23 @@ export default function HistoryPage() {
 		return <EmptyHistory user={user} />;
 	}
 
+	function CustomDot({ cx, cy, payload, onClick }: CustomDotProps) {
+		return (
+			<circle
+				cx={cx}
+				cy={cy}
+				r={5}
+				fill='#3b82f6'
+				stroke='#1e40af'
+				strokeWidth={1.5}
+				style={{ cursor: 'pointer' }}
+				onClick={() => {
+					if (payload) onClick(payload);
+				}}
+			/>
+		);
+	}
+
 	return (
 		<div className='flex flex-col items-center justify-center w-full min-h-screen p-8 gap-4'>
 			<h1 className='text-2xl font-semibold text-foreground'>Your Wellness History</h1>
@@ -150,22 +167,5 @@ export default function HistoryPage() {
 				</LineChart>
 			</ResponsiveContainer>
 		</div>
-	);
-}
-
-function CustomDot({ cx, cy, payload, onClick }: CustomDotProps) {
-	return (
-		<circle
-			cx={cx}
-			cy={cy}
-			r={5}
-			fill='#3b82f6'
-			stroke='#1e40af'
-			strokeWidth={1.5}
-			style={{ cursor: 'pointer' }}
-			onClick={() => {
-				if (payload) onClick(payload);
-			}}
-		/>
 	);
 }
