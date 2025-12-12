@@ -20,6 +20,8 @@ import {
 } from '@/components/ui/sidebar';
 import { User } from '@supabase/supabase-js';
 import { logout } from '@/lib/supabase/server';
+import { Dialog, DialogTrigger } from './ui/dialog';
+import AccountDialog from './acccount-settings-dialog';
 
 interface Props {
 	user: User;
@@ -33,7 +35,8 @@ export function NavUser({ user, initials }: Props) {
 	};
 
 	return (
-			<SidebarMenuItem>
+		<SidebarMenuItem>
+			<Dialog>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
@@ -60,7 +63,7 @@ export function NavUser({ user, initials }: Props) {
 							<div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
 								<Avatar className='h-8 w-8 rounded-lg'>
 									<AvatarImage alt={user.user_metadata.name} />
-								<AvatarFallback className='rounded-lg'>{ initials }</AvatarFallback>
+									<AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
 								</Avatar>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
 									<span className='truncate font-medium'>{user.user_metadata.name}</span>
@@ -70,16 +73,18 @@ export function NavUser({ user, initials }: Props) {
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<Sparkles />
-								Upgrade to Pro
-							</DropdownMenuItem>
+							<DialogTrigger asChild>
+								<DropdownMenuItem>
+									<BadgeCheck />
+									Account
+								</DropdownMenuItem>
+							</DialogTrigger>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
 							<DropdownMenuItem>
-								<BadgeCheck />
-								Account
+								<Sparkles />
+								Upgrade to Pro
 							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<CreditCard />
@@ -99,6 +104,8 @@ export function NavUser({ user, initials }: Props) {
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
-			</SidebarMenuItem>
+				<AccountDialog />
+			</Dialog>
+		</SidebarMenuItem>
 	);
 }
