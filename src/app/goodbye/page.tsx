@@ -5,7 +5,7 @@ export default function GoodBye() {
 	return (
 		<div className='relative flex flex-col items-center justify-center text-center w-full h-screen p-8 gap-4 text-2xl'>
 			<AuxHeader />
-			<div className='-translate-y-5 flex flex-col items-center gap-4 max-w-2xl'>
+			<div className='-translate-y-10 flex flex-col items-center gap-4 max-w-2xl'>
 				<div>
           Thank you for using StressTest! 
 				</div>

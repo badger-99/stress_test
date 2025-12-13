@@ -104,7 +104,7 @@ export function NavUser({ user, initials }: Props) {
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
-				<AccountDialog />
+				<AccountDialog user={user} />
 			</Dialog>
 		</SidebarMenuItem>
 	);
