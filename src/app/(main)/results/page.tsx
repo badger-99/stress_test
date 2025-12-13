@@ -4,7 +4,6 @@ import { useResults } from '@/providers/results-provider';
 import { Report } from '@/components/report';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
-import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -81,7 +80,7 @@ export default function Results() {
 								</Button>
 							</div>
 							<p>To add these results to your history</p>
-							<p>(We'll make sure they don't get lost 😉)</p>
+							<p>(We&apos;ll make sure they don&apos;t get lost 😉)</p>
 						</div>
 					)}
 				</div>

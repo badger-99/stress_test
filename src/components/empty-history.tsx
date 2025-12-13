@@ -1,5 +1,4 @@
 import { ChartColumn } from 'lucide-react';
-import { ArrowUpRightIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {

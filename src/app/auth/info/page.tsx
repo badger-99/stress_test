@@ -1,7 +1,5 @@
 'use client';
-import ThemeToggle from '@/components/theme-toggle';
 import Cookies from 'js-cookie';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +15,7 @@ export default function InfoPage() {
 		} else {
 			router.replace('/')
 		}
-	}, [router]);
+	}, [savedEmail, router]);
 
 	if (!email) {
 		return null
