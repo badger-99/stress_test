@@ -25,7 +25,7 @@ export default function Test() {
 		questions.forEach((q) => {
 			initialAnswers[q.id] = {
 				id: q.id,
-				value: 1,
+				value: 50,
 				category: q.category,
 				reverse_score: q.reverse_score,
 			};
@@ -41,10 +41,11 @@ export default function Test() {
 	useEffect(() => {
 		let total = 0;
 		Object.values(answers).map((answer) => {
+			const processed = Math.ceil(answer.value / 20); // converting to 1...5 scale
 			if (answer.reverse_score) {
-				total += 6 - answer.value;
+				total += 5 - processed;
 			} else {
-				total += answer.value;
+				total += processed;
 			}
 		});
 		setScore(total);
@@ -65,11 +66,18 @@ export default function Test() {
 	const handleResults = async () => {
 		if (user) {
 			setIsProcessing(true)
+			// converting raw 100-scale answers to 1...5 scale
+			const processedAnswers = Object.fromEntries(
+				Object.entries(answers).map(([k, a]) => [
+					k,
+					{ ...a, value: Math.ceil(a.value / 20) },
+				])
+			);
 			const result: Result = {
 				name: user.user_metadata.name,
 				id: user.id,
 				score,
-				answers,
+				answers: processedAnswers,
 				created_at: Date.now(),
 				feedback: getFeedback(),
 			};
@@ -97,16 +105,15 @@ export default function Test() {
 	};
 
 	return (
-		<div className='flex-1 p-4 mt-8 text-center'>
-			<div className='w-full flex flex-col p-2 items-center justify-center gap-6 mb-8'>
-				<div>
+		<div className='mx-auto flex flex-col md:w-full justify-center items-center text-center py-10 px-2'>
+			<div className='flex flex-col md:w-full p-2 items-center justify-center gap-6 mb-8 mx-auto'>
+				<div className='flex flex-col mx-auto text-center gap-2 mb-5'>
 					<p className='text-2xl font-semibold'>StressTest</p>
-					<p className='text-md mt-2 mb-5'>
-						Answer how much each statement applied to you today (1 = Not at all, 5 = Extremely).
-					</p>
+					<p className='text-md'>Answer how much each statement applies to you right now.</p>
+					<p className='text-md'>(1 = Not at all, 5 = Extremely)</p>
 				</div>
 
-				<div className='flex flex-col gap-4 w-3xl'>
+				<div className='flex flex-col gap-4 w-full md:max-w-3xl border'>
 					{questions.map((q) => {
 						return (
 							<QuestionCard
@@ -120,22 +127,28 @@ export default function Test() {
 				</div>
 				{user ? (
 					<Button
-						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white w-fit mx-auto'
 						disabled={isProcessing}
 						onClick={handleResults}
 					>
-						{isProcessing ? <><Spinner /> Please wait</>: "See Results"} 
+						{isProcessing ? (
+							<>
+								<Spinner /> Please wait
+							</>
+						) : (
+							'See Results'
+						)}
 					</Button>
 				) : (
-					<div className='flex flex-row justify-between w-md'>
+					<div className='flex flex-col justify-between gap-4 md:w-md'>
 						<input
 							type='text'
 							placeholder='Enter Your Name'
-							className='p-2 border border-blue-500 rounded-lg w-[20rem]'
+							className='p-2 border border-blue-500 rounded-lg'
 							onChange={(e) => setGuest(e.target.value)}
 						/>
 						<Button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white'
+							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white w-fit mx-auto'
 							disabled={!guest || isProcessing}
 							onClick={handleResults}
 						>
@@ -144,8 +157,8 @@ export default function Test() {
 					</div>
 				)}
 			</div>
-			<footer className='text-center text-xs text-gray-600 py-6'>
-				Made with ♥ — StressTest Prototype ©2025
+			<footer className='text-center text-xs text-gray-600 py-6 mx-auto'>
+				Alfred M. — StressTest ©2025
 			</footer>
 		</div>
 	);

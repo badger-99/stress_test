@@ -5,6 +5,7 @@ import { Providers } from '@/providers';
 import { getUser } from '@/lib/supabase/server';
 import { getInsights, getQuestions } from '@/lib/db/elevated-queries';
 import { getResults } from '@/lib/server_actions/results';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -33,8 +34,9 @@ export default async function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning={true}>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers user={user} questions={questions} insights={insights} results={results}>
+				<Providers user={user} questions={questions} insights={insights} results={results}>
 					{children}
+					<Toaster richColors position='top-center' />
 				</Providers>
 			</body>
 		</html>

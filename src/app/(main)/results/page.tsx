@@ -4,11 +4,11 @@ import { useResults } from '@/providers/results-provider';
 import { Report } from '@/components/report';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
-import Link from 'next/link';
 import { useUser } from '@/providers/user-provider';
 import { firstName } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import EmptyResults from '@/components/empty-results';
 
 export default function Results() {
 	const { results } = useResults();
@@ -17,16 +17,7 @@ export default function Results() {
 
 	if (!results.latest || !results.history) {
 		return (
-			<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8 gap-4 text-2xl'>
-				<p>There are no results to display,</p>
-				<div>
-					Please take a{' '}
-					<Link href='/test' className=' text-blue-400'>
-						test
-					</Link>{' '}
-					first.
-				</div>
-			</div>
+			<EmptyResults />
 		);
 	}
 
@@ -49,34 +40,33 @@ export default function Results() {
 	};
 
 	const handleNav = (path: string) => {
-		 if (typeof window !== 'undefined') {
-				localStorage.setItem('pending_report', JSON.stringify(latest));
-			}
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('pending_report', JSON.stringify(latest));
+		}
 		router.push(path);
 	};
 
 	return (
-		<div className='flex-1 p-4 mt-8 text-center'>
+		<div className='flex-1 p-4 mt-16 text-center'>
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
-			<div className='flex flex-row w-full justify-center gap-18'>
-				<div id='report'>
+			<div className='flex flex-col lg:flex-row w-full justify-center lg:items-start gap-6 lg:gap-12'>
+				<div id='report' className='max-w-2xl mx-auto lg:mx-0'>
 					<Report data={latest}></Report>
 				</div>
-				<div>
-					{user ? (
-						<button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer'
-							onClick={handleDownload}
-						>
-							Download PDF
-						</button>
-					) : (
+				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto lg:mx-0'>
+					<Button
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer w-fit'
+						onClick={handleDownload}
+					>
+						Download PDF
+					</Button>
+					{!user && (
 						<div className='text-center w-fit'>
 							<div>
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/signup')}
-									className=' text-blue-500 text-lg'
+									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Sign up
 								</Button>{' '}
@@ -84,19 +74,19 @@ export default function Results() {
 								<Button
 									variant='link'
 									onClick={() => handleNav('/auth/login')}
-									className=' text-blue-500 text-lg'
+									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
 								>
 									Log in
 								</Button>
 							</div>
-							<p>to generate PDF report.</p>
-							<p>(We will keep you results for you 😉)</p>
+							<p>To add these results to your history</p>
+							<p>(We&apos;ll make sure they don&apos;t get lost 😉)</p>
 						</div>
 					)}
 				</div>
 			</div>
-			<footer className='text-center text-xs text-gray-600 py-6'>
-				Made with ♥ — StressTest Prototype ©2025
+			<footer className='text-center text-xs text-gray-600 py-10'>
+				Alfred M. — StressTest ©2025
 			</footer>
 		</div>
 	);

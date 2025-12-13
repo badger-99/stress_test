@@ -3,12 +3,14 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { getUser } from '@/lib/supabase/server';
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  const user = await getUser();
+	const user = await getUser();
 	return (
 		<SidebarProvider>
 			<AppSidebar user={user} />
-				<SidebarTrigger />
+			<main className='relative flex w-full '>
+				<SidebarTrigger className='absolute top-0 left-0 p-5' />
 				{children}
+			</main>
 		</SidebarProvider>
 	);
 }

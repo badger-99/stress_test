@@ -13,17 +13,24 @@ import {
 	SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
-import { BookOpenCheck, ClipboardPlus, ChartColumn } from 'lucide-react';
+import { BookOpenCheck, ClipboardPlus, ChartColumn, LogIn, PanelLeftCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
 import { User } from '@supabase/supabase-js';
 import { NavUser } from './sidebar-user-nav';
 import { getInitials } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useSidebar } from '@/components/ui/sidebar';
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 export function AppSidebar({ user }: { user: User | null }) {
 	const pathname = usePathname();
 	const initials = getInitials(user?.user_metadata.name);
+	const { toggleSidebar } = useSidebar();
+	const isMobile = useIsMobile();
+	const router = useRouter();
 
 	const items = [
 		{
@@ -36,12 +43,22 @@ export function AppSidebar({ user }: { user: User | null }) {
 			url: '/results',
 			icon: ClipboardPlus,
 		},
+		{
+			title: 'History',
+			url: '/history',
+			icon: ChartColumn,
+		},
 	];
+
+	const handleNav = (path: string) => {
+		router.push(path);
+		toggleSidebar();
+	};
 
 	return (
 		<Sidebar collapsible='icon' className='bg-secondary'>
 			<SidebarHeader>
-				<SidebarMenu>
+				<SidebarMenu className='flex-row justify-between'>
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild className='hover:bg-transparent'>
 							<Link href='/' className='flex flex-row items-center gap-2'>
@@ -53,6 +70,11 @@ export function AppSidebar({ user }: { user: User | null }) {
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
+					{isMobile && (
+						<Button variant={'ghost'} size={'icon'} onClick={toggleSidebar}>
+							<PanelLeftCloseIcon />
+						</Button>
+					)}
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent className='px-2'>
@@ -60,56 +82,62 @@ export function AppSidebar({ user }: { user: User | null }) {
 				<SidebarGroup />
 				<SidebarGroupContent>
 					<SidebarMenu>
-						{items.map((item) => (
-							<SidebarMenuItem
-								key={item.title}
-								className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
-							>
-								<SidebarMenuButton
-									className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
-									asChild
+						{items.map((item) =>
+							isMobile ? (
+								<SidebarMenuItem
+									key={item.title}
+									className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
 								>
-									<Link href={item.url}>
+									<SidebarMenuButton
+										className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
+										onClick={() => handleNav(item.url)}
+									>
 										<item.icon />
 										<span>{item.title}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						))}
-						{user && (
-							<SidebarMenuItem
-								key='History'
-								className={`${pathname == '/history' && 'border border-blue-400 rounded-lg'}`}
-							>
-								<SidebarMenuButton
-									className={`${pathname == '/history' && 'rounded-lg hover:bg-transparent'}`}
-									asChild
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							) : (
+								<SidebarMenuItem
+									key={item.title}
+									className={`${pathname == item.url && 'border border-blue-400 rounded-lg'}`}
 								>
-									<Link href='/history'>
-										<ChartColumn />
-										<span>History</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+									<SidebarMenuButton
+										className={`${pathname == item.url && 'rounded-lg hover:bg-transparent'}`}
+										asChild
+									>
+										<Link href={item.url}>
+											<item.icon />
+											<span>{item.title}</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							)
 						)}
 					</SidebarMenu>
 				</SidebarGroupContent>
 				<SidebarGroup />
 			</SidebarContent>
 			<SidebarFooter className='pb-6'>
-				<div className='w-full ml-2 mb-2 pr-3 flex flex-row justify-between'>
-					<ThemeToggle />{' '}
-					{!user && (
-						<Link
-							href='/auth/login'
-							className='border border-foreground bg-blue-500 p-2 rounded-lg font-semibold text-white w-24 text-center'
-						>
-							Log in
-						</Link>
-					)}
-				</div>
-
-				{user && <NavUser user={user} initials={initials} />}
+				<SidebarMenu>
+					<SidebarMenuItem>
+						{' '}
+						<ThemeToggle />{' '}
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{!user && (
+							<SidebarMenuButton asChild className='flex justify-center'>
+								<Link
+									href='/auth/login'
+									className='border border-foreground bg-blue-500 p-2 rounded-lg'
+								>
+									<LogIn className='text-white' />
+									<span className='font-semibold text-white'>Log in</span>
+								</Link>
+							</SidebarMenuButton>
+						)}
+					</SidebarMenuItem>
+					{user && <NavUser user={user} initials={initials} />}
+				</SidebarMenu>
 			</SidebarFooter>
 		</Sidebar>
 	);

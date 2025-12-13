@@ -28,10 +28,10 @@ export default function Home() {
 		return (
 			<div className='flex flex-col min-h-screen pt-19'>
 				<Header />
-				<div className='flex-1 flex justify-center w-full'>
-					<div className='flex flex-col text-center gap-4 mt-32'>
+				<div className='flex-1 flex justify-center w-full h-full items-center'>
+					<div className='flex flex-col text-center gap-4'>
 						<p className='text-2xl font-semibold'>Welcome {`${name}`}!</p>
-						<div className='max-w-2xl'>
+						<div className='max-w-2xl px-5'>
 							<p>
 								Take a quick, and friendly self-assessment to explore your current stress levels and
 								emotional balance. Gain a clearer picture of your overall mental well-being today.
@@ -54,7 +54,7 @@ export default function Home() {
 					</div>
 				</div>
 				<footer className='text-center text-xs text-gray-600 py-6'>
-					Made with ♥ — StressTest Prototype ©2025
+					Alfred M. — StressTest ©2025
 				</footer>
 			</div>
 		);
@@ -63,13 +63,13 @@ export default function Home() {
 	return (
 		<div className='flex flex-col min-h-screen pt-19'>
 			<Header />
-			<div className='flex-1 flex justify-center w-full'>
-				<div className='flex flex-col text-center gap-4 mt-32'>
-					<div className=''>
+			<div className='flex-1 flex justify-center w-full h-full items-center'>
+				<div className='flex flex-col text-center gap-4'>
+					<div>
 						<p className='text-2xl font-semibold'>Welcome to StressTest!</p>
 						<p className='text-lg'>The Emotional Well-Being Check-In</p>
 					</div>
-					<div className='max-w-2xl'>
+					<div className='max-w-2xl px-5'>
 						<p>
 							Take a free, quick, and friendly self-assessment to explore your current stress levels
 							and emotional balance. Gain a clearer picture of your overall mental well-being today.
@@ -92,7 +92,7 @@ export default function Home() {
 				</div>
 			</div>
 			<footer className='text-center text-xs text-gray-600 py-6'>
-				Made with ♥ — StressTest Prototype ©2025
+				Alfred M. — StressTest ©2025
 			</footer>
 		</div>
 	);

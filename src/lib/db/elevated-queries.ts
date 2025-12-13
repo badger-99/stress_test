@@ -1,3 +1,4 @@
+'use server'
 import { createClient, PostgrestResponse } from '@supabase/supabase-js';
 import { Insight, Question } from '../types';
 
@@ -29,4 +30,20 @@ export async function getInsights() {
 	}
 
 	return insights ?? [];
+}
+
+export async function deleteUser(user_id: string) {
+	const { data, error } = await supabase.auth.admin.deleteUser(user_id)
+
+	if (error) {
+		console.error(`Error deleting account ${user_id}`, error)
+		throw new Error('Error deleting account');
+	}
+
+	if (!data.user) {
+		console.error(`Error deleting account ${user_id}. User doesn't exist`)
+		throw new Error(`Error deleting account ${user_id}. User doesn't exist`);
+	}
+
+	return data.user.id
 }
