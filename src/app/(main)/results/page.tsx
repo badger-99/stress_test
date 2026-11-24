@@ -1,49 +1,29 @@
 'use client';
 
-import { useResults } from '@/providers/results-provider';
+import { useResult } from '@/providers/results-provider';
 import { Report } from '@/components/report';
 import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
-import { useUser } from '@/providers/user-provider';
-import { firstName } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 import EmptyResults from '@/components/empty-results';
 
 export default function Results() {
-	const { results } = useResults();
-	const { user } = useUser();
-	const router = useRouter();
+	const { latest: result, loaded } = useResult();
 
-	if (!results.latest || !results.history) {
-		return (
-			<EmptyResults />
-		);
+	if (!loaded) return null;
+
+	if (!result) {
+		return <EmptyResults />;
 	}
-
-	const latest = results.latest!;
-
-	if (user) {
-		latest.name = user.user_metadata.name;
-	}
-
-	const name = user ? firstName(user.user_metadata.name) : latest.name;
 
 	const handleDownload = async () => {
-		const blob = await pdf(<PDFReport data={latest} />).toBlob();
+		const blob = await pdf(<PDFReport data={result} />).toBlob();
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = `stress-report-${name.toLowerCase()}.pdf`;
+		link.download = `stress-report-${result.name.trim().toLowerCase().replace(/\s+/g, '-')}.pdf`;
 		link.click();
 		URL.revokeObjectURL(url);
-	};
-
-	const handleNav = (path: string) => {
-		if (typeof window !== 'undefined') {
-			localStorage.setItem('pending_report', JSON.stringify(latest));
-		}
-		router.push(path);
 	};
 
 	return (
@@ -51,7 +31,7 @@ export default function Results() {
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
 			<div className='flex flex-col lg:flex-row w-full justify-center lg:items-start gap-6 lg:gap-12'>
 				<div id='report' className='max-w-2xl mx-auto lg:mx-0'>
-					<Report data={latest}></Report>
+					<Report data={result}></Report>
 				</div>
 				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto lg:mx-0'>
 					<Button
@@ -60,29 +40,9 @@ export default function Results() {
 					>
 						Download PDF
 					</Button>
-					{!user && (
-						<div className='text-center w-fit'>
-							<div>
-								<Button
-									variant='link'
-									onClick={() => handleNav('/auth/signup')}
-									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
-								>
-									Sign up
-								</Button>{' '}
-								or{' '}
-								<Button
-									variant='link'
-									onClick={() => handleNav('/auth/login')}
-									className='p-2 text-blue-500 text-lg border border-blue-500 cursor-pointer'
-								>
-									Log in
-								</Button>
-							</div>
-							<p>To add these results to your history</p>
-							<p>(We&apos;ll make sure they don&apos;t get lost 😉)</p>
-						</div>
-					)}
+					<p className='max-w-56 text-sm text-muted-foreground'>
+						Saved in this browser only. Download the PDF to keep a copy elsewhere.
+					</p>
 				</div>
 			</div>
 			<footer className='text-center text-xs text-gray-600 py-10'>

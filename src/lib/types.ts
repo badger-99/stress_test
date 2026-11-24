@@ -5,10 +5,6 @@ export interface Question {
 	reverse_score: boolean;
 }
 
-export interface StressTest {
-	questions: Record<string, Question>;
-}
-
 export interface Answer {
 	id: string;
 	value: number;
@@ -29,11 +25,6 @@ export interface Result {
 	answers: Record<string, Answer>;
 	created_at: number;
 	feedback: Feedback;
-}
-
-export interface Results {
-	history: Result[];
-	latest: Result | null;
 }
 
 export interface Insight {

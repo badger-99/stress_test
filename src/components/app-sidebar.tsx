@@ -13,21 +13,17 @@ import {
 	SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
-import { BookOpenCheck, ClipboardPlus, ChartColumn, LogIn, PanelLeftCloseIcon } from 'lucide-react';
+import { BookOpenCheck, ChartColumn, ClipboardPlus, PanelLeftCloseIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
-import { User } from '@supabase/supabase-js';
-import { NavUser } from './sidebar-user-nav';
-import { getInitials } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSidebar } from '@/components/ui/sidebar';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 
-export function AppSidebar({ user }: { user: User | null }) {
+export function AppSidebar() {
 	const pathname = usePathname();
-	const initials = getInitials(user?.user_metadata.name);
 	const { toggleSidebar } = useSidebar();
 	const isMobile = useIsMobile();
 	const router = useRouter();
@@ -123,20 +119,6 @@ export function AppSidebar({ user }: { user: User | null }) {
 						{' '}
 						<ThemeToggle />{' '}
 					</SidebarMenuItem>
-					<SidebarMenuItem>
-						{!user && (
-							<SidebarMenuButton asChild className='flex justify-center'>
-								<Link
-									href='/auth/login'
-									className='border border-foreground bg-blue-500 p-2 rounded-lg'
-								>
-									<LogIn className='text-white' />
-									<span className='font-semibold text-white'>Log in</span>
-								</Link>
-							</SidebarMenuButton>
-						)}
-					</SidebarMenuItem>
-					{user && <NavUser user={user} initials={initials} />}
 				</SidebarMenu>
 			</SidebarFooter>
 		</Sidebar>

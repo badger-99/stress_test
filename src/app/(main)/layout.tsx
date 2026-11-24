@@ -1,12 +1,10 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
-import { getUser } from '@/lib/supabase/server';
 
-export default async function MainLayout({ children }: { children: React.ReactNode }) {
-	const user = await getUser();
+export default function MainLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<SidebarProvider>
-			<AppSidebar user={user} />
+			<AppSidebar />
 			<main className='relative flex w-full '>
 				<SidebarTrigger className='absolute top-0 left-0 p-5' />
 				{children}

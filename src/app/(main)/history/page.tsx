@@ -1,6 +1,6 @@
 'use client';
 
-import { useResults } from '@/providers/results-provider';
+import { useResult } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useEffect, useState, useMemo } from 'react';
@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResultHistoryItem } from '@/lib/types';
 import { EmptyHistory } from '@/components/empty-history';
-import { useUser } from '@/providers/user-provider';
 
 interface CustomDotProps {
 	cx?: number;
@@ -37,27 +36,25 @@ const formatTime = (timestamp: number, scale: 'minutes' | 'hours' | 'days') => {
 };
 
 export default function HistoryPage() {
-	const { results } = useResults();
+	const { history, loaded, clearHistory } = useResult();
 	const { theme } = useTheme();
 	const router = useRouter();
-	const { user } = useUser();
 
 	const [scale, setScale] = useState<ScaleOptions>('days');
 	const [data, setData] = useState<ResultHistoryItem[]>([]);
 
 	useEffect(() => {
-		if (results.history && results.history.length > 0) {
-			const formatted = results.history.map((r, index) => ({
-				id: r.id,
-				name: r.name,
-				score: r.score,
-				time: formatTime(r.created_at, scale),
-				created_at: r.created_at,
-				index,
-			}));
-			setData(formatted.reverse());
-		}
-	}, [results.history, scale]);
+		// history is stored oldest first, which is the order the chart wants
+		const formatted = history.map((r, index) => ({
+			id: r.id,
+			name: r.name,
+			score: r.score,
+			time: formatTime(r.created_at, scale),
+			created_at: r.created_at,
+			index,
+		}));
+		setData(formatted);
+	}, [history, scale]);
 
 	const averageScore = useMemo(() => {
 		if (!data.length) return 0;
@@ -70,9 +67,17 @@ export default function HistoryPage() {
 
 	const isDark = theme === 'dark';
 
+	if (!loaded) return null;
+
 	if (data.length < 1) {
-		return <EmptyHistory user={user} />;
+		return <EmptyHistory />;
 	}
+
+	const handleClear = () => {
+		if (window.confirm('Delete all check-ins saved in this browser? This cannot be undone.')) {
+			clearHistory();
+		}
+	};
 
 	function CustomDot({ cx, cy, payload, onClick }: CustomDotProps) {
 		return (
@@ -95,7 +100,7 @@ export default function HistoryPage() {
 		<div className='flex flex-col items-center justify-center w-full min-h-screen p-8 gap-4'>
 			<h1 className='text-2xl font-semibold text-foreground'>Your Wellness History</h1>
 			<p className='text-muted-foreground text-sm mb-4'>
-				Track how your stress levels changed over time.
+				Track how your stress levels changed over time. Saved in this browser only.
 			</p>
 
 			{/* Time Scale Switcher */}
@@ -148,7 +153,7 @@ export default function HistoryPage() {
 							borderRadius: '0.5rem',
 							color: 'var(--foreground)',
 						}}
-						formatter={(value: number) => [`${value}`, 'Score']}
+						formatter={(value) => [`${value}`, 'Score']}
 						labelStyle={{ color: 'var(--muted-foreground)' }}
 					/>
 					<Line
@@ -166,6 +171,10 @@ export default function HistoryPage() {
 					/>
 				</LineChart>
 			</ResponsiveContainer>
+
+			<Button variant='outline' className='mt-4 cursor-pointer' onClick={handleClear}>
+				Clear history
+			</Button>
 		</div>
 	);
 }
