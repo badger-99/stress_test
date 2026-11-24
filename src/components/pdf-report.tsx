@@ -1,3 +1,4 @@
+import { MAX_SCORE } from '@/lib/data/assessment';
 import { Document, Image, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Result } from '@/lib/types';
 
@@ -140,7 +141,7 @@ export function PDFReport({ data }: { data: Result }) {
 						<View style={styles.scoreRow}>
 							<View style={styles.scoreItem}>
 								<Text style={styles.scoreLabel}>Overall Score</Text>
-								<Text style={styles.scoreValue}>{data.score} / 50</Text>
+								<Text style={styles.scoreValue}>{data.score} / {MAX_SCORE}</Text>
 							</View>
 							<View style={styles.scoreItem}>
 								<Text style={styles.scoreLabel}>Stress Level</Text>
@@ -167,6 +168,8 @@ export function PDFReport({ data }: { data: Result }) {
 					<View style={styles.disclaimer}>
 						<Text>
 							Disclaimer: This tool is for personal reflection and not a medical diagnosis.
+							Questions from the Perceived Stress Scale (PSS-10; Cohen, Kamarck & Mermelstein, 1983).
+							Stress levels use commonly applied score ranges and are a guide, not a clinical cutoff.
 						</Text>
 					</View>
 				</View>

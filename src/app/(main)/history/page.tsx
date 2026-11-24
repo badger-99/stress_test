@@ -1,5 +1,6 @@
 'use client';
 
+import { MAX_SCORE } from '@/lib/data/assessment';
 import { useResult } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -143,7 +144,7 @@ export default function HistoryPage() {
 					<YAxis
 						stroke='var(--muted-foreground)'
 						tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
-						domain={[0, 'dataMax + 5']}
+						domain={[0, MAX_SCORE]}
 					/>
 					<Tooltip
 						cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}

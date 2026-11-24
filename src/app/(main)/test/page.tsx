@@ -1,111 +1,83 @@
 'use client';
 
 import QuestionCard from '@/components/question';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Answer, Result } from '@/lib/types';
 import { useResult } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { insights, questions } from '@/lib/data/assessment';
-import { Spinner } from '@/components/ui/spinner';
+import { bandFor, PROMPT, questions, scoreAnswers } from '@/lib/data/assessment';
 
 export default function Test() {
 	const router = useRouter();
 	const { addResult } = useResult();
-	const [score, setScore] = useState(0);
 	const [guest, setGuest] = useState('');
-	const [isProcessing, setIsProcessing] = useState(false)
-	const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
-		const initialAnswers: Record<string, Answer> = {};
-		questions.forEach((q) => {
-			initialAnswers[q.id] = {
-				id: q.id,
-				value: 50,
-				category: q.category,
-				reverse_score: q.reverse_score,
-			};
-		});
-		return initialAnswers;
-	});
+	// Only answered items are in here; an item is missing until it's answered.
+	const [answers, setAnswers] = useState<Record<string, Answer>>({});
+
+	const answeredCount = Object.keys(answers).length;
+	const allAnswered = answeredCount === questions.length;
 
 	const handleResponse = (id: string, value: number, category: string, reverse_score: boolean) => {
 		setAnswers((prev) => ({ ...prev, [id]: { id, value, category, reverse_score } }));
 	};
 
-	useEffect(() => {
-		let total = 0;
-		Object.values(answers).map((answer) => {
-			const processed = Math.ceil(answer.value / 20); // converting to 1...5 scale
-			if (answer.reverse_score) {
-				total += 5 - processed;
-			} else {
-				total += processed;
-			}
-		});
-		setScore(total);
-	}, [answers, setScore]);
-
-	const getFeedback = () => {
-		if (score < 20) {
-			return insights[0];
-		} else if (score < 30) {
-			return insights[1];
-		} else if (score < 40) {
-			return insights[2];
-		} else {
-			return insights[3];
-		}
-	};
-
 	const handleResults = () => {
-		setIsProcessing(true);
+		// Score and band are worked out from the answers at submit time, never stored separately.
+		const score = scoreAnswers(answers);
 		const result: Result = {
-			name: guest,
+			name: guest.trim(),
 			id: crypto.randomUUID(),
 			score,
 			answers,
 			created_at: Date.now(),
-			feedback: getFeedback(),
+			feedback: bandFor(score),
 		};
 		addResult(result);
-		setIsProcessing(false);
 		router.push('/results');
 	};
 
 	return (
 		<div className='mx-auto flex flex-col md:w-full justify-center items-center text-center py-10 px-2'>
 			<div className='flex flex-col md:w-full p-2 items-center justify-center gap-6 mb-8 mx-auto'>
-				<div className='flex flex-col mx-auto text-center gap-2 mb-5'>
+				<div className='flex flex-col mx-auto text-center gap-2 mb-5 max-w-2xl'>
 					<p className='text-2xl font-semibold'>StressTest</p>
-					<p className='text-md'>Answer how much each statement applies to you right now.</p>
-					<p className='text-md'>(1 = Not at all, 5 = Extremely)</p>
+					<p className='text-md'>
+						These questions ask about your feelings and thoughts during the last month. For each
+						one, pick how often you felt or thought that way.
+					</p>
+					<p className='text-lg font-medium mt-2'>{PROMPT}</p>
 				</div>
 
-				<div className='flex flex-col gap-4 w-full md:max-w-3xl border'>
-					{questions.map((q) => {
-						return (
-							<QuestionCard
-								key={q.id}
-								question={q}
-								value={answers[q.id]?.value || 0}
-								onChange={(value) => handleResponse(q.id, value, q.category, q.reverse_score)}
-							/>
-						);
-					})}
+				<div className='flex flex-col gap-4 w-full md:max-w-3xl'>
+					{questions.map((q, i) => (
+						<QuestionCard
+							key={q.id}
+							number={i + 1}
+							question={q}
+							value={answers[q.id]?.value}
+							onChange={(value) => handleResponse(q.id, value, q.category, q.reverse_score)}
+						/>
+					))}
 				</div>
+
 				<div className='flex flex-col justify-between gap-4 md:w-md'>
+					<p className='text-sm text-muted-foreground' aria-live='polite'>
+						{answeredCount} of {questions.length} answered
+					</p>
 					<input
 						type='text'
 						placeholder='Enter Your Name'
 						className='p-2 border border-blue-500 rounded-lg'
+						value={guest}
 						onChange={(e) => setGuest(e.target.value)}
 					/>
 					<Button
 						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white w-fit mx-auto'
-						disabled={!guest || isProcessing}
+						disabled={!guest.trim() || !allAnswered}
 						onClick={handleResults}
 					>
-						{isProcessing && <Spinner />} See Results
+						See Results
 					</Button>
 				</div>
 			</div>

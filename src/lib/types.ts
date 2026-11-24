@@ -7,6 +7,7 @@ export interface Question {
 
 export interface Answer {
 	id: string;
+	/** 0-4 on the PSS scale (Never ... Very often). */
 	value: number;
 	category: string;
 	reverse_score: boolean;
@@ -29,6 +30,9 @@ export interface Result {
 
 export interface Insight {
 	stress_level: string;
+	/** Inclusive score range for this band. */
+	min_score: number;
+	max_score: number;
 	description: string;
 	recommendations: string[];
 }
