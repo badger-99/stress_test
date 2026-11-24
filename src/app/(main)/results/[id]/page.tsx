@@ -1,82 +1,55 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useResults } from '@/providers/results-provider';
-import { Report } from '@/components/report';
-import { pdf } from '@react-pdf/renderer';
-import { PDFReport } from '@/components/pdf-report';
 import Link from 'next/link';
-import { useUser } from '@/providers/user-provider';
-import { firstName } from '@/lib/utils';
+import { pdf } from '@react-pdf/renderer';
+import { useResult } from '@/providers/results-provider';
+import { Report } from '@/components/report';
+import { PDFReport } from '@/components/pdf-report';
+import { Button } from '@/components/ui/button';
+import EmptyResults from '@/components/empty-results';
 
-export default function Results() {
-  const { id } = useParams<{ id: string }>();
-	const { results } = useResults();
-	const { user } = useUser();
+export default function PastResult() {
+	const { id } = useParams<{ id: string }>();
+	const { history, loaded } = useResult();
 
-	if (results.history.length < 1) {
-		return (
-			<div className='relative flex flex-col items-center pt-[20rem] w-full h-screen p-8 gap-4 text-2xl'>
-				<p>There are no results in your history to display,</p>
-				<div>
-					Please take your first{' '}
-					<Link href='/test' className=' text-blue-400'>
-						test
-					</Link>
-					.
-				</div>
-			</div>
-		);
-	}
+	if (!loaded) return null;
 
-	const selected = results.history.find((r) => r.id == id);
+	const selected = history.find((r) => r.id === id);
 
-	if (!selected) return <p>Loading result...</p>;
-
-	selected.name = user?.user_metadata.name;
-	const name = firstName(user?.user_metadata.name);
+	if (!selected) return <EmptyResults />;
 
 	const handleDownload = async () => {
 		const blob = await pdf(<PDFReport data={selected} />).toBlob();
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = `stress-report-${name.toLowerCase()}.pdf`;
+		link.download = `stress-report-${selected.name.trim().toLowerCase().replace(/\s+/g, '-')}.pdf`;
 		link.click();
 		URL.revokeObjectURL(url);
 	};
 
 	return (
-		<div className='flex-1 p-4 mt-8 text-center'>
+		<div className='flex-1 p-4 mt-16 text-center'>
 			<div className='text-2xl font-semibold mb-5'>Test Results</div>
-			<div className='flex flex-row w-full justify-center gap-18'>
-				<div id='report'>
+			<div className='flex flex-col lg:flex-row w-full justify-center lg:items-start gap-6 lg:gap-12'>
+				<div id='report' className='max-w-2xl mx-auto lg:mx-0'>
 					<Report data={selected}></Report>
 				</div>
-				<div>
-					{user ? (
-						<button
-							className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer'
-							onClick={handleDownload}
-						>
-							Download PDF
-						</button>
-					) : (
-						<div className='text-center w-fit'>
-							<Link href='/auth/signup' className=' text-blue-400'>
-								Sign up
-							</Link>{' '}
-							or{' '}
-							<Link href='/auth/login' className=' text-blue-400'>
-								Log in
-							</Link>{' '}
-							to generate PDF report
-						</div>
-					)}
+				<div className='flex flex-col w-fit justify-center items-center gap-4 mx-auto lg:mx-0'>
+					<Button
+						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold text-white h-fit cursor-pointer w-fit'
+						onClick={handleDownload}
+					>
+						Download PDF
+					</Button>
+					<Link href='/history' className='text-sm text-blue-500'>
+						Back to history
+					</Link>
 				</div>
 			</div>
-			<footer className='text-center text-xs text-gray-600 py-6'>
-				Made with ♥ — StressTest Prototype ©2025
+			<footer className='text-center text-xs text-gray-600 py-10'>
+				Alfred M. — StressTest ©2025
 			</footer>
 		</div>
 	);

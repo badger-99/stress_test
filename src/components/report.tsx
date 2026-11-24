@@ -1,3 +1,4 @@
+import { MAX_SCORE } from '@/lib/data/assessment';
 import { Result } from '@/lib/types';
 
 interface Props {
@@ -44,7 +45,7 @@ export function Report({ data }: Props) {
 							<p className='mb-1 text-sm font-semibold uppercase tracking-wide text-gray-600'>
 								Overall Score
 							</p>
-							<p className='text-3xl font-bold text-gray-900'>{data.score} / 50</p>
+							<p className='text-3xl font-bold text-gray-900'>{data.score} / {MAX_SCORE}</p>
 						</div>
 						<div>
 							<p className='mb-1 text-sm font-semibold uppercase tracking-wide text-gray-600'>
@@ -84,7 +85,9 @@ export function Report({ data }: Props) {
 				<div className='rounded-lg bg-gray-100 p-4'>
 					<p className='text-xs leading-relaxed text-gray-700'>
 						<span className='font-semibold'>Disclaimer:</span> This tool is for personal reflection
-						and not a medical diagnosis.
+						and not a medical diagnosis. Questions from the Perceived Stress Scale (PSS-10; Cohen,
+						Kamarck &amp; Mermelstein, 1983). Stress levels use commonly applied score ranges and are
+						a guide, not a clinical cutoff.
 					</p>
 				</div>
 			</footer>

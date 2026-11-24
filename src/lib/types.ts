@@ -5,12 +5,9 @@ export interface Question {
 	reverse_score: boolean;
 }
 
-export interface StressTest {
-	questions: Record<string, Question>;
-}
-
 export interface Answer {
 	id: string;
+	/** 0-4 on the PSS scale (Never ... Very often). */
 	value: number;
 	category: string;
 	reverse_score: boolean;
@@ -31,13 +28,11 @@ export interface Result {
 	feedback: Feedback;
 }
 
-export interface Results {
-	history: Result[];
-	latest: Result | null;
-}
-
 export interface Insight {
 	stress_level: string;
+	/** Inclusive score range for this band. */
+	min_score: number;
+	max_score: number;
 	description: string;
 	recommendations: string[];
 }
