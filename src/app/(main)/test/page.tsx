@@ -102,7 +102,7 @@ export default function Test() {
 				</div>
 			</div>
 			<footer className='text-center text-xs text-gray-600 py-6 mx-auto'>
-				Alfred M. — StressTest ©2025
+				Alfred M. — StressTest ©2025–2026
 			</footer>
 		</div>
 	);

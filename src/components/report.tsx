@@ -21,7 +21,7 @@ export function Report({ data }: Props) {
 	const recommendations = data.ai?.recommendations ?? data.feedback.recommendations;
   const date = new Date(data.created_at).toLocaleString()
 	return (
-		<div className='mx-auto max-w-4xl bg-white p-12 text-foreground print:p-8 border border-black'>
+		<div className='mx-auto max-w-4xl bg-white p-5 sm:p-8 md:p-12 text-foreground print:p-8 border border-black'>
 			{/* Header Section */}
 			<header className='mb-8 border-b-2 border-gray-300 pb-6'>
 				<div className='mb-4 flexitems-center justify-between'>
@@ -52,26 +52,26 @@ export function Report({ data }: Props) {
 			{/* Summary Section */}
 			<section className='mb-12'>
 				<h2 className='mb-4 text-xl font-bold text-gray-900'>Results</h2>
-				<div className='rounded-lg border border-gray-200 bg-gray-50 p-6'>
-					<div className='mb-4 grid grid-cols-2 gap-6'>
+				<div className='rounded-lg border border-gray-200 bg-gray-50 p-4 sm:p-6'>
+					<div className='mb-4 grid grid-cols-2 gap-3 sm:gap-6'>
 						<div>
 							<p className='mb-1 text-sm font-semibold uppercase tracking-wide text-gray-600'>
 								Overall Score
 							</p>
-							<p className='text-3xl font-bold text-gray-900'>{data.score} / {MAX_SCORE}</p>
+							<p className='whitespace-nowrap text-lg min-[340px]:text-xl sm:text-3xl font-bold text-gray-900'>{data.score} / {MAX_SCORE}</p>
 						</div>
 						<div>
 							<p className='mb-1 text-sm font-semibold uppercase tracking-wide text-gray-600'>
 								Stress Level
 							</p>
-							<p className='text-3xl font-bold text-gray-900'>{data.feedback.stress_level}</p>
+							<p className='whitespace-nowrap text-lg min-[340px]:text-xl sm:text-3xl font-bold text-gray-900'>{data.feedback.stress_level}</p>
 						</div>
 					</div>
 					<div className='border-t border-gray-300 pt-4'>
 						<p className='mb-1 text-sm font-semibold uppercase tracking-wide text-gray-600'>
 							Interpretation
 						</p>
-						<p className='leading-relaxed text-gray-800'>{data.feedback.description}</p>
+						<p className='leading-relaxed text-gray-800 text-left sm:text-center'>{data.feedback.description}</p>
 					</div>
 					{data.ai && (
 						<div className='mt-4 border-t border-gray-300 pt-4'>
@@ -81,7 +81,7 @@ export function Report({ data }: Props) {
 								</p>
 								<AiBadge />
 							</div>
-							<p className='leading-relaxed text-gray-800'>{data.ai.summary}</p>
+							<p className='leading-relaxed text-gray-800 text-left sm:text-center'>{data.ai.summary}</p>
 						</div>
 					)}
 				</div>
@@ -93,8 +93,8 @@ export function Report({ data }: Props) {
 					<h2 className='text-xl font-bold text-gray-900'>Recommendations</h2>
 					{data.ai && <AiBadge />}
 				</div>
-				<div className='rounded-lg border border-gray-200 bg-white p-6'>
-					<ul className='space-y-3 lg:text-left'>
+				<div className='rounded-lg border border-gray-200 bg-white p-4 sm:p-6'>
+					<ul className='space-y-3 text-left'>
 						{recommendations.map((recommendation, index) => (
 							<li key={index} className='flex gap-3'>
 								<span className='mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground'>
