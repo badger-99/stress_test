@@ -55,6 +55,9 @@ export function scoreAnswers(answers: Record<string, Answer>): number {
 // Bands 0-13 / 14-26 / 27-40 are the cutoffs most commonly used with the PSS-10.
 // They are a convention, not official norms from the scale's authors, so the
 // report presents them as a guide.
+export const PROFESSIONAL_HELP =
+	'If stress feels constant or overwhelming, consider reaching out to a counselor or mental health professional.';
+
 export const insights: Insight[] = [
 	{
 		stress_level: 'Low',
@@ -92,7 +95,7 @@ export const insights: Insight[] = [
 			"Talk to someone you trust about what's been weighing on you — you don't have to handle it alone.",
 			'Schedule real breaks: even short walks or deep-breathing sessions help calm the system.',
 			'Check your basics — sleep, meals, hydration — they matter more than they seem.',
-			'If stress feels constant or overwhelming, consider reaching out to a counselor or mental health professional.',
+			PROFESSIONAL_HELP,
 		],
 	},
 ];

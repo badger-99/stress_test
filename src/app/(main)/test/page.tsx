@@ -2,16 +2,18 @@
 
 import QuestionCard from '@/components/question';
 import { useState } from 'react';
-import { Answer, Result } from '@/lib/types';
+import { AiSummary, Answer, Result } from '@/lib/types';
 import { useResult } from '@/providers/results-provider';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { bandFor, PROMPT, questions, scoreAnswers } from '@/lib/data/assessment';
+import { PageTitle } from '@/components/page-title';
 
 export default function Test() {
 	const router = useRouter();
 	const { addResult } = useResult();
 	const [guest, setGuest] = useState('');
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	// Only answered items are in here; an item is missing until it's answered.
 	const [answers, setAnswers] = useState<Record<string, Answer>>({});
 
@@ -22,32 +24,50 @@ export default function Test() {
 		setAnswers((prev) => ({ ...prev, [id]: { id, value, category, reverse_score } }));
 	};
 
-	const handleResults = () => {
+	const handleResults = async () => {
+		setIsSubmitting(true);
 		// Score and band are worked out from the answers at submit time, never stored separately.
 		const score = scoreAnswers(answers);
+		const level = bandFor(score);
+
+		const body = {
+			answers: Object.fromEntries(Object.entries(answers).map(([id, a]) => [id, a.value])),
+		};
+
+		let ai: AiSummary | undefined;
+		try {
+			const res = await fetch('/api/summary', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(body),
+				signal: AbortSignal.timeout(25000),
+			});
+			if (res.ok) ai = (await res.json()) as AiSummary;
+		} catch {
+			// Network error or timeout: carry on with the static feedback.
+		}
+
 		const result: Result = {
 			name: guest.trim(),
 			id: crypto.randomUUID(),
 			score,
 			answers,
 			created_at: Date.now(),
-			feedback: bandFor(score),
+			feedback: level,
+			ai,
 		};
 		addResult(result);
 		router.push('/results');
 	};
 
 	return (
-		<div className='mx-auto flex flex-col md:w-full justify-center items-center text-center py-10 px-2'>
+		<div className='mx-auto flex flex-col md:w-full items-center text-center pb-10 px-2'>
+			<PageTitle
+				title='Stress Check-In'
+				subtitle='These questions ask about your feelings and thoughts during the last month. For each one, pick how often you felt or thought that way.'
+			/>
 			<div className='flex flex-col md:w-full p-2 items-center justify-center gap-6 mb-8 mx-auto'>
-				<div className='flex flex-col mx-auto text-center gap-2 mb-5 max-w-2xl'>
-					<p className='text-2xl font-semibold'>StressTest</p>
-					<p className='text-md'>
-						These questions ask about your feelings and thoughts during the last month. For each
-						one, pick how often you felt or thought that way.
-					</p>
-					<p className='text-lg font-medium mt-2'>{PROMPT}</p>
-				</div>
+				<p className='text-lg font-medium mb-2'>{PROMPT}</p>
 
 				<div className='flex flex-col gap-4 w-full md:max-w-3xl'>
 					{questions.map((q, i) => (
@@ -74,10 +94,10 @@ export default function Test() {
 					/>
 					<Button
 						className='border border-foreground bg-gradient-to-br from-blue-600 to-blue-400 p-2 rounded-lg font-semibold cursor-pointer text-white w-fit mx-auto'
-						disabled={!guest.trim() || !allAnswered}
+						disabled={!guest.trim() || !allAnswered || isSubmitting}
 						onClick={handleResults}
 					>
-						See Results
+						{isSubmitting ? 'Preparing your results…' : 'See Results'}
 					</Button>
 				</div>
 			</div>
