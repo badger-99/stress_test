@@ -17,7 +17,7 @@ export default function Home() {
 							and emotional balance. Gain a clearer picture of your overall mental well-being today.
 						</p>
 						<p className='mt-3 text-sm text-muted-foreground'>
-							No account needed. Your results are saved in this browser only and never sent anywhere.
+							No account needed. Your results are saved in this browser only. To write your personal summary, your answers (never your name) are sent to an AI model (DeepSeek); StressTest itself doesn&apos;t store them.
 						</p>
 					</div>
 					<div className='flex justify-center gap-8 p-8'>
@@ -31,7 +31,7 @@ export default function Home() {
 				</div>
 			</div>
 			<footer className='text-center text-xs text-gray-600 py-6'>
-				Alfred M. — StressTest ©2025
+				Alfred M. — StressTest ©2025–2026
 			</footer>
 		</div>
 	);
