@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResultHistoryItem } from '@/lib/types';
 import { EmptyHistory } from '@/components/empty-history';
+import { PageTitle } from '@/components/page-title';
 
 interface CustomDotProps {
 	cx?: number;
@@ -71,7 +72,12 @@ export default function HistoryPage() {
 	if (!loaded) return null;
 
 	if (data.length < 1) {
-		return <EmptyHistory />;
+		return (
+			<div className='flex-1'>
+				<PageTitle title='Your Wellness History' />
+				<EmptyHistory />
+			</div>
+		);
 	}
 
 	const handleClear = () => {
@@ -98,11 +104,11 @@ export default function HistoryPage() {
 	}
 
 	return (
-		<div className='flex flex-col items-center justify-center w-full min-h-screen p-8 gap-4'>
-			<h1 className='text-2xl font-semibold text-foreground'>Your Wellness History</h1>
-			<p className='text-muted-foreground text-sm mb-4'>
-				Track how your stress levels changed over time. Saved in this browser only.
-			</p>
+		<div className='flex flex-col items-center w-full px-8 pb-8 gap-4'>
+			<PageTitle
+				title='Your Wellness History'
+				subtitle='Track how your stress levels changed over time. Saved in this browser only.'
+			/>
 
 			{/* Time Scale Switcher */}
 			<div className='flex gap-2 mb-4'>

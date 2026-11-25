@@ -26,6 +26,7 @@ export interface Result {
 	answers: Record<string, Answer>;
 	created_at: number;
 	feedback: Feedback;
+	ai?: AiSummary;
 }
 
 export interface Insight {
@@ -44,4 +45,9 @@ export interface ResultHistoryItem {
 	created_at: number;
 	time: string;
 	index: number;
+}
+
+export interface AiSummary {
+	summary: string;
+	recommendations: string[];
 }

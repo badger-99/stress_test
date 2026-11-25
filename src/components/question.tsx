@@ -32,10 +32,14 @@ export default function QuestionCard({ question, number, value, onChange }: Prop
 							aria-label={option.label}
 							onClick={() => onChange(option.value)}
 							className={cn(
-								'min-w-0 hyphens-manual rounded-lg border px-0.5 py-2 text-[11px] sm:px-1 sm:text-sm leading-tight cursor-pointer transition-colors',
+								// Shared: same lift + stronger glow on hover for every answer, selected or not.
+								'min-w-0 hyphens-manual rounded-lg border px-0.5 py-2 text-[11px] sm:px-1 sm:text-sm leading-tight cursor-pointer',
+								'transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out',
+								'hover:-translate-y-0.5 hover:shadow-[0_0_14px_rgba(59,130,246,0.45)] motion-reduce:transform-none',
+								'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 								selected
-									? 'border-blue-600 bg-gradient-to-br from-blue-600 to-blue-400 text-white font-semibold'
-									: 'border-foreground/20 bg-background hover:border-blue-400'
+									? 'border-blue-600 bg-gradient-to-br from-blue-600 to-blue-400 text-white font-semibold shadow-[0_0_10px_rgba(59,130,246,0.35)]'
+									: 'border-blue-300/80 bg-background shadow-[0_0_6px_rgba(59,130,246,0.22)] hover:border-blue-500 dark:border-blue-400/40 dark:hover:border-blue-400'
 							)}
 						>
 							{option.display}

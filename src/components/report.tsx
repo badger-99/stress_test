@@ -1,11 +1,24 @@
 import { MAX_SCORE } from '@/lib/data/assessment';
 import { Result } from '@/lib/types';
+import { Sparkles } from 'lucide-react';
 
 interface Props {
 	data: Result;
 }
 
+// Small pill marking text written by the language model.
+function AiBadge() {
+	return (
+		<span className='inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold normal-case tracking-normal text-blue-700'>
+			<Sparkles className='size-3' aria-hidden='true' />
+			AI-generated
+		</span>
+	);
+}
+
 export function Report({ data }: Props) {
+	// AI recommendations replace the static ones when the summary call succeeded.
+	const recommendations = data.ai?.recommendations ?? data.feedback.recommendations;
   const date = new Date(data.created_at).toLocaleString()
 	return (
 		<div className='mx-auto max-w-4xl bg-white p-12 text-foreground print:p-8 border border-black'>
@@ -60,15 +73,29 @@ export function Report({ data }: Props) {
 						</p>
 						<p className='leading-relaxed text-gray-800'>{data.feedback.description}</p>
 					</div>
+					{data.ai && (
+						<div className='mt-4 border-t border-gray-300 pt-4'>
+							<div className='mb-1 flex flex-wrap items-center justify-center gap-2'>
+								<p className='text-sm font-semibold uppercase tracking-wide text-gray-600'>
+									Your Personal Summary
+								</p>
+								<AiBadge />
+							</div>
+							<p className='leading-relaxed text-gray-800'>{data.ai.summary}</p>
+						</div>
+					)}
 				</div>
 			</section>
 
 			{/* Recommendations Section */}
 			<section className='mb-16'>
-				<h2 className='mb-4 text-xl font-bold text-gray-900'>Recommendations</h2>
+				<div className='mb-4 flex flex-wrap items-center justify-center gap-2'>
+					<h2 className='text-xl font-bold text-gray-900'>Recommendations</h2>
+					{data.ai && <AiBadge />}
+				</div>
 				<div className='rounded-lg border border-gray-200 bg-white p-6'>
 					<ul className='space-y-3 lg:text-left'>
-						{data.feedback.recommendations.map((recommendation, index) => (
+						{recommendations.map((recommendation, index) => (
 							<li key={index} className='flex gap-3'>
 								<span className='mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground'>
 									{index + 1}
@@ -88,6 +115,8 @@ export function Report({ data }: Props) {
 						and not a medical diagnosis. Questions from the Perceived Stress Scale (PSS-10; Cohen,
 						Kamarck &amp; Mermelstein, 1983). Stress levels use commonly applied score ranges and are
 						a guide, not a clinical cutoff.
+						{data.ai &&
+							' Sections marked AI-generated were written by a language model from your answers only (no name or other personal details were sent) and may not be perfect.'}
 					</p>
 				</div>
 			</footer>
