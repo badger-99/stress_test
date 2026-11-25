@@ -33,7 +33,7 @@
 
 **_StressTest_** is a simple, friendly self-assessment app that helps you understand your stress levels and emotional balance. It’s designed to promote awareness, reflection, and well-being — without collecting personal data.
 
-It uses the **Perceived Stress Scale (PSS-10)**, a widely used, research-validated stress questionnaire, and keeps every result on your own device: there are no accounts and no database.
+It uses the **Perceived Stress Scale (PSS-10)**, a widely used, research-validated stress questionnaire, and keeps every result on your own device: there are no accounts and no database. A short server route adds an AI-written personal summary, built so the model never decides a score and never sees your name.
 
 ## 🛠 Build Tools <a name="build-tools"></a>
 
@@ -45,6 +45,8 @@ It uses the **Perceived Stress Scale (PSS-10)**, a widely used, research-validat
     <li><a href="https://tailwindcss.com" target="_blank">TailwindCSS 4</a> and <a href="https://ui.shadcn.com" target="_blank">shadcn/ui</a> for styling and components.</li>
     <li><a href="https://react-pdf.org" target="_blank">React-PDF</a> for downloadable reports.</li>
     <li><a href="https://recharts.org" target="_blank">Recharts</a> for the history chart.</li>
+    <li><a href="https://ai-sdk.dev" target="_blank">AI SDK</a> with <a href="https://www.deepseek.com" target="_blank">DeepSeek</a> (<code>deepseek-v4-flash</code>) for the personal summary, and <a href="https://zod.dev" target="_blank">Zod</a> for validating requests.</li>
+    <li><a href="https://motion.dev" target="_blank">Motion</a> for the animated title underlines.</li>
     <li><a href="https://pnpm.io/" target="_blank">pnpm</a> as a package manager.</li>
     <li><a href="https://vercel.com" target="_blank">Vercel</a> for deployment.</li>
   </ul>
@@ -65,14 +67,28 @@ The questions, scale, scoring and levels all live in one module, [`src/lib/data/
 
 #### 🔒 Privacy and storage
 
-Nothing leaves your browser.
+Your results never leave your browser. The only thing sent anywhere is your answers, to write your personal summary.
 
 - Results are saved in the browser’s `localStorage`, so your history survives a refresh but stays on that device and browser.
 - **Clear history** on the History page deletes everything.
 - If storage is unavailable (private browsing, blocked site data), the app still works for that visit; it just won’t remember.
+- For the personal summary, the 10 answers (numbers only, never your name) go to the app’s server, which forwards them as words to DeepSeek. StressTest stores nothing on the server and doesn’t log the answers.
 
 > 🧩 **Why no database?**
 > Earlier versions used Supabase for sign-in and saved history. Stress answers are sensitive, and a public demo doesn’t need to hold anyone’s data, so the app was rebuilt to keep everything on the user’s device. The account-based version is preserved under the git tag [`accounts-supabase-v1`](../../tree/accounts-supabase-v1).
+
+---
+
+#### ✨ AI summary
+
+After you submit, the browser calls `POST /api/summary` ([`src/app/api/summary/route.ts`](src/app/api/summary/route.ts)) and the result page shows the reply under an **AI-generated** label.
+
+- **Only numbers come in.** A [Zod](https://zod.dev) schema accepts exactly the 10 question ids with whole numbers from 0 to 4 and rejects anything else (`400`), so there is no free text to misuse and no way to slip instructions into the prompt.
+- **The server re-scores.** It rebuilds the answers from its own question list and calculates the score and level itself; a score sent by the browser is never trusted.
+- **The model writes words, not numbers.** The prompt lists each answer as a word and leaves the score out; the model returns `{ summary, recommendations }` as validated structured output.
+- **Safety rule in code.** For a High level, a talk-to-a-professional recommendation is always included, added by the server if the model leaves it out.
+- **Bounded and fail-safe.** Each call is capped at 3000 output tokens and 20 seconds. Any failure returns a generic `502`, and the app falls back to the static feedback, so results always appear.
+- **Provider-agnostic.** The call goes through the [AI SDK](https://ai-sdk.dev), so switching to another provider is a small change in `route.ts` (install its package, change the import and model id), as long as the model supports structured output.
 
 ---
 
@@ -86,6 +102,7 @@ Nothing leaves your browser.
 
 - **[Validated questionnaire]**: the 10-item Perceived Stress Scale, scored as published.
 - **[No sign-up, no tracking]**: results stay in your browser.
+- **[AI personal summary]**: a short summary and recommendations written from your answers, clearly labelled, with a safe fallback.
 - **[Progress tracking]**: a history chart of past check-ins; click a point to reopen that report.
 - **[PDF reports]**: download any result as a PDF.
 
@@ -105,10 +122,15 @@ To get a local copy up and running, follow these steps.
 
 In order to run this project you need:
 
-- [**Node.js**](https://nodejs.org) 18.18 or higher (I used v22)
+- [**Node.js**](https://nodejs.org) 22 or higher (required by the AI SDK)
 - [**pnpm**](https://pnpm.io/installation)
+- *(Optional)* a [DeepSeek API key](https://platform.deepseek.com) for the AI summary. Without one, everything else works and results show the static feedback.
 
-No accounts, API keys or environment variables are needed.
+To enable the summary, create a `.env` file in the project root:
+
+```bash
+DEEPSEEK_API_KEY=your-deepseek-api-key
+```
 
 ### Setup
 
@@ -133,7 +155,7 @@ For a production build, run `pnpm build` followed by `pnpm start`.
 
 ### Deployment
 
-The easiest place to deploy is on [Vercel](https://vercel.com). They also have a great free tier for personal projects. Since the app has no backend, there is nothing else to configure.
+The easiest place to deploy is on [Vercel](https://vercel.com). They also have a great free tier for personal projects. Add `DEEPSEEK_API_KEY` to the project’s environment variables to enable the AI summary; nothing else needs configuring.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -148,7 +170,8 @@ The easiest place to deploy is on [Vercel](https://vercel.com). They also have a
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-- [ ] **[AI-generated insights based solely on your answers, with no name or other personal data sent.]**
+- [x] **[AI-generated insights based solely on your answers, with no name or other personal data sent.]**
+- [ ] **[Kiswahili translation]**
 - [ ] **[Optional accounts with consent-based, synced history]**
 - [ ] **[Emailing PDF reports to registered users]**
 

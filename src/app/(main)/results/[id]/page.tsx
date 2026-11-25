@@ -56,7 +56,7 @@ export default function PastResult() {
 				</div>
 			</div>
 			<footer className='text-center text-xs text-gray-600 py-10'>
-				Alfred M. — StressTest ©2025
+				Alfred M. — StressTest ©2025–2026
 			</footer>
 		</div>
 	);
