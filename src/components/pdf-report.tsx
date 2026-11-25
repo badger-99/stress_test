@@ -4,7 +4,7 @@ import { Result } from '@/lib/types';
 
 const styles = StyleSheet.create({
 	page: {
-		padding: 48,
+		padding: 40,
 		backgroundColor: '#ffffff',
 	},
 	logo: {
@@ -37,14 +37,14 @@ const styles = StyleSheet.create({
 	},
 	metaRow: {
 		flexDirection: 'row',
-		marginBottom: 20,
+		marginBottom: 12,
 		gap: 40,
 	},
 	metaItem: {
 		fontSize: 14,
 	},
 	section: {
-		marginBottom: 48,
+		marginBottom: 16,
 	},
 	sectionTitle: {
 		fontSize: 18,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#f9fafb',
 		border: '1px solid #e5e7eb',
 		borderRadius: 8,
-		padding: 24,
+		padding: 18,
 	},
 	scoreRow: {
 		flexDirection: 'row',
@@ -72,18 +72,18 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 	},
 	scoreValue: {
-		fontSize: 28,
+		fontSize: 24,
 		fontWeight: 'bold',
 	},
 	description: {
-		fontSize: 14,
-		lineHeight: 1.6,
-		paddingTop: 16,
+		fontSize: 12,
+		lineHeight: 1.5,
+		paddingTop: 12,
 		borderTop: '1px solid #d1d5db',
 	},
 	recommendationItem: {
 		flexDirection: 'row',
-		marginBottom: 12,
+		marginBottom: 8,
 		gap: 12,
 	},
 	recommendationNumber: {
@@ -98,24 +98,53 @@ const styles = StyleSheet.create({
 	},
 	recommendationText: {
 		flex: 1,
-		fontSize: 14,
-		lineHeight: 1.6,
+		fontSize: 12,
+		lineHeight: 1.5,
 	},
-	footer: {
+	labelRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8,
+		marginBottom: 6,
+	},
+	aiBadge: {
+		fontSize: 8,
+		color: '#1d4ed8',
+		backgroundColor: '#eff6ff',
+		border: '1px solid #bfdbfe',
+		borderRadius: 8,
+		paddingVertical: 2,
+		paddingHorizontal: 6,
+	},
+	aiSummary: {
+		marginTop: 12,
+		paddingTop: 12,
 		borderTop: '1px solid #d1d5db',
-		paddingTop: 24,
 	},
+	aiSummaryText: {
+		fontSize: 12,
+		lineHeight: 1.5,
+	},
+	sectionTitleRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8,
+		marginBottom: 12,
+	},
+	footer: {},
 	disclaimer: {
 		backgroundColor: '#f3f4f6',
-		padding: 16,
+		padding: 10,
 		borderRadius: 8,
-		fontSize: 10,
-		lineHeight: 1.5,
+		fontSize: 9,
+		lineHeight: 1.4,
 	},
 });
 
 export function PDFReport({ data }: { data: Result }) {
 	const date = new Date(data.created_at).toLocaleString();
+	// AI recommendations replace the static ones when the summary call succeeded.
+	const recommendations = data.ai?.recommendations ?? data.feedback.recommendations;
 
 	return (
 		<Document>
@@ -149,14 +178,26 @@ export function PDFReport({ data }: { data: Result }) {
 							</View>
 						</View>
 						<Text style={styles.description}>{data.feedback.description}</Text>
+						{data.ai && (
+							<View style={styles.aiSummary}>
+								<View style={styles.labelRow}>
+									<Text style={styles.scoreLabel}>Your Personal Summary</Text>
+									<Text style={styles.aiBadge}>AI-generated</Text>
+								</View>
+								<Text style={styles.aiSummaryText}>{data.ai.summary}</Text>
+							</View>
+						)}
 					</View>
 				</View>
 
 				{/* Recommendations */}
 				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Recommendations</Text>
-					{data.feedback.recommendations.map((rec, index) => (
-						<View key={index} style={styles.recommendationItem}>
+					<View style={styles.sectionTitleRow} minPresenceAhead={60}>
+						<Text style={{ ...styles.sectionTitle, marginBottom: 0 }}>Recommendations</Text>
+						{data.ai && <Text style={styles.aiBadge}>AI-generated</Text>}
+					</View>
+					{recommendations.map((rec, index) => (
+						<View key={index} style={styles.recommendationItem} wrap={false}>
 							<Text style={styles.recommendationNumber}>{index + 1}</Text>
 							<Text style={styles.recommendationText}>{rec}</Text>
 						</View>
@@ -164,12 +205,14 @@ export function PDFReport({ data }: { data: Result }) {
 				</View>
 
 				{/* Footer */}
-				<View style={styles.footer}>
+				<View style={styles.footer} wrap={false}>
 					<View style={styles.disclaimer}>
 						<Text>
 							Disclaimer: This tool is for personal reflection and not a medical diagnosis.
 							Questions from the Perceived Stress Scale (PSS-10; Cohen, Kamarck & Mermelstein, 1983).
 							Stress levels use commonly applied score ranges and are a guide, not a clinical cutoff.
+							{data.ai &&
+								' Sections marked AI-generated were written by a language model from your answers only (no name or other personal details were sent) and may not be perfect.'}
 						</Text>
 					</View>
 				</View>

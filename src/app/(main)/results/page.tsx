@@ -6,6 +6,7 @@ import { pdf } from '@react-pdf/renderer';
 import { PDFReport } from '@/components/pdf-report';
 import { Button } from '@/components/ui/button';
 import EmptyResults from '@/components/empty-results';
+import { PageTitle } from '@/components/page-title';
 
 export default function Results() {
 	const { latest: result, loaded } = useResult();
@@ -13,7 +14,12 @@ export default function Results() {
 	if (!loaded) return null;
 
 	if (!result) {
-		return <EmptyResults />;
+		return (
+			<div className='flex-1'>
+				<PageTitle title='Test Results' />
+				<EmptyResults />
+			</div>
+		);
 	}
 
 	const handleDownload = async () => {
@@ -27,8 +33,8 @@ export default function Results() {
 	};
 
 	return (
-		<div className='flex-1 p-4 mt-16 text-center'>
-			<div className='text-2xl font-semibold mb-5'>Test Results</div>
+		<div className='flex-1 px-4 pb-4 text-center'>
+			<PageTitle title='Test Results' />
 			<div className='flex flex-col lg:flex-row w-full justify-center lg:items-start gap-6 lg:gap-12'>
 				<div id='report' className='max-w-2xl mx-auto lg:mx-0'>
 					<Report data={result}></Report>
