@@ -16,6 +16,10 @@ export default function Home() {
 							Take a free, quick, and friendly self-assessment to explore your current stress levels
 							and emotional balance. Gain a clearer picture of your overall mental well-being today.
 						</p>
+						<p className='mt-3'>
+							The questions come from the Perceived Stress Scale (PSS-10; Cohen, Kamarck & Mermelstein,
+							1983), one of the most widely used and validated stress questionnaires.
+						</p>
 						<p className='mt-3 text-sm text-muted-foreground'>
 							No account needed. Your results are saved in this browser only. To write your personal summary, your answers (never your name) are sent to an AI model (DeepSeek); StressTest itself doesn&apos;t store them.
 						</p>

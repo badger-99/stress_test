@@ -14,9 +14,19 @@ const geistMono = Geist_Mono({
 	subsets: ['latin'],
 });
 
+const description = 'A PSS-10 stress check-in with an AI-written summary. No account needed.';
+
+// The description is also what link previews show (LinkedIn, Slack, WhatsApp...).
 export const metadata: Metadata = {
 	title: 'StressTest',
-	description: 'Check-in for emotional well-being',
+	description,
+	openGraph: {
+		title: 'StressTest',
+		description,
+		url: 'https://stresstest.alfredm.me',
+		siteName: 'StressTest',
+		type: 'website',
+	},
 };
 
 export default function RootLayout({
@@ -26,7 +36,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en' suppressHydrationWarning={true}>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
 				<Providers>
 					{children}
 					<Toaster richColors position='top-center' />
